@@ -108,6 +108,7 @@ We process the list **group by group**:
 #### Step 1: Count Availability of K Nodes
 
 Before reversing a group:
+
 - Traverse `K` nodes ahead using a temporary pointer
 - If fewer than `K` nodes exist:
   - Stop processing
@@ -121,13 +122,16 @@ Prevents partial reversal, which violates the problem constraint.
 #### Step 2: Reverse Exactly K Nodes
 
 Once confirmed that K nodes exist:
+
 - Use three pointers:
   - `prev` (initially `nullptr`)
   - `curr` (start of the group)
   - `next` (to preserve forward link)
 
 Repeat exactly `K` times:
-```
+
+```cpp
+
 next = curr->next
 curr->next = prev
 prev = curr
@@ -135,6 +139,7 @@ curr = next
 ```
 
 After this:
+
 - `prev` → new head of the group
 - original group head → becomes the group tail
 
@@ -143,11 +148,13 @@ After this:
 #### Step 3: Reconnect the Group
 
 Maintain:
+
 - `prevGroupTail` → tail of previously processed group
 - `newGroupHead` → `prev` from reversal
 - `newGroupTail` → original head before reversal
 
 Connections:
+
 - If this is the **first group**:
   - Update global `head`
 - Else:

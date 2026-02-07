@@ -9,6 +9,7 @@
 ### Problem Statement
 
 You are given two **non-empty singly linked lists** representing two **non-negative integers**.  
+
 - Each node contains a **single digit (0–9)**.
 - The digits are stored in **forward order**.
 
@@ -33,7 +34,9 @@ Add the two numbers and return the sum as a **new singly linked list**, also in 
 ### Examples
 
 #### Example 1
+
 ```
+
 Input:
 L1: 7 → 2 → 4 → 3
 L2: 5 → 6 → 4
@@ -119,7 +122,10 @@ We solve this in **three logical phases**:
 **Why?**  
 To know which list reaches the “units place” later.
 
+
 **Code Mapping**
+
+
 - Function: `int getLength(Node* head)`
 - Loop until `nullptr`, increment counter.
 
@@ -128,8 +134,11 @@ To know which list reaches the “units place” later.
 #### Step 2: Recursive Addition Core
 
 We define a recursive function that:
+
 - Moves forward until both lists are aligned at the **same distance from the end**
+
 - Then adds digits **while returning back up the recursion stack
+
 ## Part 2: Solution Code + 10 Test Cases
 
 ---
@@ -336,5 +345,3 @@ int main() {
     return 0;
 }
 ```
-
----
