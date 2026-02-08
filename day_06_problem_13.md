@@ -10,12 +10,13 @@
 
 Given the head of a **singly linked list**, reorder the list in the following pattern:
 
-```
+```md
 L0 → L1 → L2 → ... → Ln-1 → Ln
 ```
 
 Reorder it to:
-```
+
+```md
 L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → ...
 ```
 
@@ -46,7 +47,8 @@ Return the head of the reordered list.
 ### Examples
 
 #### Example 1 (Even Length)
-```
+
+```md
 Input:
 1 → 2 → 3 → 4 → 5 → 6
 
@@ -57,7 +59,8 @@ Output:
 ---
 
 #### Example 2 (Odd Length)
-```
+
+```md
 Input:
 1 → 2 → 3 → 4 → 5
 
@@ -68,7 +71,8 @@ Output:
 ---
 
 #### Example 3 (Minimal Case)
-```
+
+```md
 Input:
 1 → 2
 
@@ -89,10 +93,12 @@ Think of people standing in a line.
 - And so on…
 
 We:
+
 - First **remember all people in order** using a queue
 - Then **rebuild the line** by taking from the **front and back alternately**
 
 But since we only have a queue:
+
 - We must be **very careful** how we extract and reconnect people
 
 ---
@@ -102,6 +108,7 @@ But since we only have a queue:
 At first glance, this looks like a simple rearrangement.
 
 But constraints make it hard:
+
 - Singly linked list → no backward traversal
 - Queue → FIFO only
 - No arrays → no index access
@@ -130,10 +137,12 @@ We break the problem into **two logical phases**:
 #### Phase 1: Push All Nodes into Queue
 
 Traverse the list once:
+
 - Push each `Node*` into the queue
 - Do **not** change pointers yet
 
 At the end:
+
 - Queue contains nodes in original order
 
 ---
@@ -141,6 +150,7 @@ At the end:
 #### Phase 2: Rebuild List Using Queue
 
 We rebuild the list by:
+
 - Alternately selecting:
   - front element
   - last element
@@ -148,6 +158,7 @@ We rebuild the list by:
 But queues are FIFO.
 
 To simulate “take from back”:
+
 - Rotate the queue:
   - Move first `(size - 1)` elements to the back
   - Then pop the last one
@@ -162,14 +173,15 @@ This keeps us compliant with **queue-only access**.
 
 #### Step 1: Queue Construction
 
-```
+```cpp
 curr = head
 while curr:
     queue.push(curr)
     curr = curr->next
 ```
 
-**Invariant**
+##### **Invariant**
+
 - Queue holds exact node addresses in original order
 - No pointers modified yet
 
@@ -197,6 +209,7 @@ While queue is not empty:
    - attach it after `tail`
 
 After each attachment:
+
 - Update `tail`
 - Explicitly set `tail->next = nullptr` to avoid cycles
 
@@ -255,7 +268,6 @@ This inefficiency is intentional — this is a **reasoning test**, not an optimi
   - termination and cycle checks
 
 ---
-
 
 ## Part 2: Solution Code + 10 Test Cases
 
@@ -420,7 +432,3 @@ int main() {
     return 0;
 }
 ```
-
----
-
-
