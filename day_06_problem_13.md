@@ -255,3 +255,172 @@ This inefficiency is intentional — this is a **reasoning test**, not an optimi
   - termination and cycle checks
 
 ---
+
+
+## Part 2: Solution Code + 10 Test Cases
+
+---
+
+### Solution Code (`reorder_list_using_queue.cpp`)
+
+```cpp
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int d) : data(d), next(nullptr) {}
+};
+
+/*
+Reorders a singly linked list as:
+L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → ...
+
+Constraints honored:
+- Singly linked list
+- Queue only (no deque, no array)
+- No recursion
+- No new node creation
+- Pointer rewiring only
+*/
+Node* reorderUsingQueue(Node* head) {
+    if (!head || !head->next) return head;
+
+    queue<Node*> q;
+    Node* curr = head;
+
+    // Phase 1: Push all nodes into queue
+    while (curr) {
+        q.push(curr);
+        curr = curr->next;
+    }
+
+    // Phase 2: Rebuild list
+    Node* newHead = q.front();
+    q.pop();
+    Node* tail = newHead;
+    tail->next = nullptr;
+
+    bool takeFront = false;
+
+    while (!q.empty()) {
+        if (takeFront) {
+            // Take from front
+            Node* node = q.front();
+            q.pop();
+            tail->next = node;
+            tail = node;
+            tail->next = nullptr;
+        } else {
+            // Take from back by rotating queue
+            int sz = q.size();
+            for (int i = 0; i < sz - 1; i++) {
+                q.push(q.front());
+                q.pop();
+            }
+            Node* node = q.front();
+            q.pop();
+            tail->next = node;
+            tail = node;
+            tail->next = nullptr;
+        }
+        takeFront = !takeFront;
+    }
+
+    return newHead;
+}
+```
+
+---
+
+### Test File (`test_reorder_list_using_queue.cpp`)
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int d) : data(d), next(nullptr) {}
+};
+
+/* --- Declaration from solution file --- */
+Node* reorderUsingQueue(Node* head);
+
+/* ---------- Test Utilities ---------- */
+
+Node* buildList(const vector<int>& vals) {
+    if (vals.empty()) return nullptr;
+    Node* head = new Node(vals[0]);
+    Node* curr = head;
+    for (size_t i = 1; i < vals.size(); i++) {
+        curr->next = new Node(vals[i]);
+        curr = curr->next;
+    }
+    return head;
+}
+
+void printList(Node* head) {
+    while (head) {
+        cout << head->data;
+        if (head->next) cout << " -> ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+/* ---------- Test Cases ---------- */
+
+int main() {
+
+    // 1. Even length list
+    printList(reorderUsingQueue(buildList({1,2,3,4,5,6})));
+    // Expected: 1 -> 6 -> 2 -> 5 -> 3 -> 4
+
+    // 2. Odd length list
+    printList(reorderUsingQueue(buildList({1,2,3,4,5})));
+    // Expected: 1 -> 5 -> 2 -> 4 -> 3
+
+    // 3. Two nodes
+    printList(reorderUsingQueue(buildList({1,2})));
+    // Expected: 1 -> 2
+
+    // 4. Single node
+    printList(reorderUsingQueue(buildList({7})));
+    // Expected: 7
+
+    // 5. Three nodes
+    printList(reorderUsingQueue(buildList({1,2,3})));
+    // Expected: 1 -> 3 -> 2
+
+    // 6. Four nodes
+    printList(reorderUsingQueue(buildList({10,20,30,40})));
+    // Expected: 10 -> 40 -> 20 -> 30
+
+    // 7. Repeated values
+    printList(reorderUsingQueue(buildList({5,5,5,5,5,5})));
+    // Expected: 5 -> 5 -> 5 -> 5 -> 5 -> 5
+
+    // 8. Larger list
+    printList(reorderUsingQueue(buildList({1,2,3,4,5,6,7,8,9})));
+    // Expected: 1 -> 9 -> 2 -> 8 -> 3 -> 7 -> 4 -> 6 -> 5
+
+    // 9. Already minimal reorder effect
+    printList(reorderUsingQueue(buildList({1,2,3,4})));
+    // Expected: 1 -> 4 -> 2 -> 3
+
+    // 10. Empty list
+    printList(reorderUsingQueue(nullptr));
+    // Expected: (prints nothing)
+
+    return 0;
+}
+```
+
+---
+
+
