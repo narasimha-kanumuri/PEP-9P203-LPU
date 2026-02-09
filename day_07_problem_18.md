@@ -38,15 +38,17 @@ Given the head of a **singly linked list** of integers:
 ## 3. Input / Output Specification
 
 ### Input
+
 - Head pointer of a singly linked list  
   Example:
 2 → 1 → 5
-Copy code
+
 
 ### Output
+
 - Head pointer of a new singly linked list
 5 → 5 → 0
-Copy code
+
 
 ---
 
@@ -62,6 +64,7 @@ Copy code
 ---
 
 ## 5. Implementation Narrative  
+
 ### (ELI5 → English-to-Code)
 
 We will explain this **as if converting English directly into code logic**.
@@ -74,6 +77,7 @@ From a given node, you **cannot see backward**.
 But the answer for a node may appear **later** in the list.
 
 So when you move forward:
+
 - You must **remember unresolved nodes**
 - And resolve them **when a higher value appears**
 
@@ -82,6 +86,7 @@ So when you move forward:
 ### Key Insight
 
 When a new temperature appears:
+
 - It may answer the question for **multiple previous sensors**
 - But only those that are **waiting for a higher value**
 
@@ -95,6 +100,7 @@ So we need:
 1. Start traversing the linked list from the head.
 
 2. Maintain:
+   
  - A structure to store **nodes whose answer is not yet known**
  - Each stored element remembers:
    - The node’s value
