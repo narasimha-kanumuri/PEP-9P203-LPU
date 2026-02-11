@@ -29,6 +29,7 @@ The system engineers warn you:
 You are **not allowed** to keep a separate structure just to track minimum values.
 
 That means:
+
 - ❌ No second stack  
 - ❌ No arrays, vectors, maps, or lists  
 - ❌ No global containers  
@@ -91,6 +92,7 @@ Instead, we do something clever:
 ### Key Insight (Mental Model)
 
 At any moment, the system needs to know:
+
 - The current minimum
 - What the previous minimum was **before the last change**
 
@@ -136,6 +138,7 @@ This transformed value acts like:
    - Update `currentMin = x`
 
 This encoded value remembers:
+
 - The new minimum
 - Enough information to restore the old one
 

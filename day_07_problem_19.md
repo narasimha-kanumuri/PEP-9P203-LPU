@@ -20,6 +20,7 @@ There is a serious restriction in the warehouse:
 - ❌ No looping machines  
 
 You are allowed to:
+
 - Remove the **top container**
 - Place a container **back on top**
 - Use **only the lift’s internal call mechanism** (recursion)
@@ -29,6 +30,7 @@ You are allowed to:
 ## 2. The Twist (Very Important)
 
 During reordering:
+
 - You are **not allowed** to directly compare or rearrange more than **one container at a time**
 - Every movement must happen **through recursive calls**
 - At no point can you see the entire stack at once
@@ -51,15 +53,15 @@ Given a stack of integers representing container weights:
 ## 4. Input / Output Specification
 
 ### Input
+
 - A stack of integers  
   Example (top shown first):
 Top → 3, 1, 4, 2
-Copy code
 
 ### Output
+
 - The same stack after sorting:
 Top → 1, 2, 3, 4
-Copy code
 
 ---
 
@@ -74,7 +76,8 @@ Copy code
 
 ---
 
-## 6. Implementation Narrative  
+## 6. Implementation Narrative
+
 ### (ELI5 → English-to-Code)
 
 This problem is **not about sorting directly**.  
@@ -104,15 +107,18 @@ We solve this in **two recursive phases**:
 ### Phase 1: Empty the Stack Recursively
 
 1. If the stack is empty:
- - There is nothing to sort
- - Return immediately
 
-2. Otherwise:
- - Remove the top element
- - Recursively sort the remaining stack
- - Now, insert the removed element back into its **correct position**
+- There is nothing to sort
+- Return immediately
+
+1. Otherwise:
+
+- Remove the top element
+- Recursively sort the remaining stack
+- Now, insert the removed element back into its **correct position**
 
 At this point:
+
 - The stack below is already sorted
 - Only one element needs to be placed correctly
 
@@ -123,20 +129,21 @@ At this point:
 To insert an element `x` into a sorted stack:
 
 1. If the stack is empty:
- - Just push `x`
- - This is its correct position
+    - Just push `x`
+    - This is its correct position
 
 2. Otherwise:
- - Look at the top element `t`
- - If `t ≤ x`:
-   - `x` belongs above `t`
-   - Push `x`
- - Else:
-   - Remove `t`
-   - Recursively insert `x` into the smaller stack
-   - Push `t` back on top
+    - Look at the top element `t`
+    - If `t ≤ x`:
+      - `x` belongs above `t`
+      - Push `x`
+    - Else:
+      - Remove `t`
+      - Recursively insert `x` into the smaller stack
+      - Push `t` back on top
 
 This ensures:
+
 - Order is preserved
 - No extra data structure is used
 
@@ -154,14 +161,17 @@ This ensures:
 ## 7. Notes
 
 ### Why Loops Are Banned
+
 - Loops would allow manual iteration
 - This problem is specifically testing **recursive thinking**
 
 ### Why No Extra Stack Is Allowed
+
 - That would trivialize the problem
 - Recursion must do all the heavy lifting
 
 ### Common Student Mistakes
+
 - Using vectors or arrays secretly ❌
 - Using helper stacks ❌
 - Sorting during removal instead of insertion ❌

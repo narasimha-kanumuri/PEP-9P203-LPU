@@ -168,7 +168,7 @@ This guarantees **linear time**.
 - The required structure is a **monotonic decreasing stack**
 - Stack enforces:
 waiting values are strictly decreasing
-Copy code
+
 
 - Each node is:
 - Pushed once
