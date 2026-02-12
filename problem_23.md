@@ -120,3 +120,75 @@ To do this:
 A number is **pushed once** and **popped once** → total operations stay linear.
 
 ---
+
+
+## Test Case
+
+# First Honest Number: Test Cases & Analysis
+
+This document contains the sample and variety test cases for the **First Honest Number** problem, including dry runs and logical explanations.
+
+---
+
+## Sample Test Cases
+
+| Sample Input | Sample Output | One-Line Explanation |
+| :--- | :--- | :--- |
+| `1, 2, 1` | `1 1 2` | The first unique number is 1 until it repeats at the third step, leaving 2 as the new first unique. |
+| `8, 8, 8` | `-1 -1 -1` | Since 8 repeats immediately and no other numbers arrive, no unique ID ever exists. |
+
+---
+
+## Variety Test Cases (Dry Run & Analysis)
+
+### 1. The "Perfect Alternator" (Toggling States)
+**Input:** `10, 20, 10, 20`  
+**Output:** `10 10 20 -1`
+
+* **In 10:** Freq `{10:1}`, Queue `[10]`. Front is 10. Output: **10**
+* **In 20:** Freq `{10:1, 20:1}`, Queue `[10, 20]`. Front is 10. Output: **10**
+* **In 10:** Freq `{10:2, 20:1}`, Queue `[10, 20]`. Pop 10 (freq > 1). Front is 20. Output: **20**
+* **In 20:** Freq `{10:2, 20:2}`, Queue `[20]`. Pop 20 (freq > 1). Queue empty. Output: **-1**
+
+> **Explanation:** This tests the system's ability to "move the pointer" to the next candidate when the current leader becomes dishonest.
+
+### 2. The "Fresh Blood" (Late Unique Entry)
+**Input:** `5, 5, 5, 9`  
+**Output:** `-1 -1 -1 9`
+
+* **Steps 1-3:** `5` arrives repeatedly. Queue is cleared every time because `freq[5] > 1`. Output: **-1, -1, -1**
+* **In 9:** Freq `{5:3, 9:1}`, Queue `[9]`. Front is 9. Output: **9**
+
+> **Explanation:** Validates that the system recovers from a "no unique" state (-1) as soon as a new unique number arrives.
+
+### 3. The "Unique Streak" (No Repetitions)
+**Input:** `1, 2, 3`  
+**Output:** `1 1 1`
+
+* **In 1:** Queue `[1]`. Front: **1**
+* **In 2:** Queue `[1, 2]`. Front: **1**
+* **In 3:** Queue `[1, 2, 3]`. Front: **1**
+
+> **Explanation:** Tests if the "First" rule is respected. Even though 2 and 3 are unique, 1 arrived first and stays the leader.
+
+### 4. The "Deep Cleanup" (Mass Invalidation)
+**Input:** `1, 2, 3, 1, 2`  
+**Output:** `1 1 1 2 3`
+
+* **Steps 1-3:** Output is `1`. Queue is `[1, 2, 3]`.
+* **In 1:** `freq[1]` becomes 2. Pop 1. New front is 2. Output: **2**
+* **In 2:** `freq[2]` becomes 2. Pop 2. New front is 3. Output: **3**
+
+> **Explanation:** Shows the `while` loop logic in action, where multiple elements are popped in a single step to find the next valid "Honest Number."
+
+### 5. The "Recurrent Distraction" (Repeating an already repeated number)
+**Input:** `4, 6, 4, 4`  
+**Output:** `4 4 6 6`
+
+* **In 4:** Queue `[4]`. Output: **4**
+* **In 6:** Queue `[4, 6]`. Output: **4**
+* **In 4:** `freq[4]=2`. Pop 4. Front is 6. Output: **6**
+* **In 4:** `freq[4]=3`. Queue is `[6]`. Front is 6. Output: **6**
+
+> **Explanation:** Ensures that further appearances of an already "dishonest" number do not affect the current valid leader.
+

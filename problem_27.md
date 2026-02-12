@@ -132,3 +132,79 @@ This ensures:
 Each element is processed once → O(N + M).
 
 ---
+
+
+# Shipment Intersection: Test Cases & Analysis
+
+This problem identifies the common items between two shipment logs. If an item appears multiple times in both logs, it should appear in the intersection as many times as it does in the smaller of the two logs.
+
+---
+
+## Additional Sample Test Cases
+
+| Sample Input | Output | Explanation |
+| :--- | :--- | :--- |
+| `A = [1, 1, 1], B = [1, 1]` | `[1, 1]` | Item `1` appears three times in A and twice in B. The minimum overlap is 2. |
+| `A = [10, 20], B = [30, 40]` | `[]` | No items overlap between the two shipments, resulting in an empty report. |
+
+---
+
+## 5 Variety Test Cases (with Dry Runs)
+
+### 1. The "Uneven Duplicates" Case
+**Input:** `A = [7, 7, 8, 8, 8], B = [7, 8, 8]`  
+**Output:** `[7, 8, 8]`
+
+* **Map A:** `{7: 2, 8: 3}`
+* **Process B:**
+    * `7`: Found in map (count 2). Add to result, Map becomes `{7: 1, 8: 3}`.
+    * `8`: Found in map (count 3). Add to result, Map becomes `{7: 1, 8: 2}`.
+    * `8`: Found in map (count 2). Add to result, Map becomes `{7: 1, 8: 1}`.
+
+> **Explanation:** Tests if the algorithm correctly picks the minimum count when both sides have duplicates but in different quantities.
+
+### 2. The "Single Match in Chaos" Case
+**Input:** `A = [1, 5, 10, 20, 25], B = [99, 88, 77, 10, 66]`  
+**Output:** `[10]`
+
+* **Map A:** `{1: 1, 5: 1, 10: 1, 20: 1, 25: 1}`
+* **Process B:**
+    * `99, 88, 77`: Not in map.
+    * `10`: Found (count 1). Add to result, Map becomes `{..., 10: 0, ...}`.
+    * `66`: Not in map.
+
+> **Explanation:** Ensures the logic works when only a single element matches amidst many unique ones.
+
+### 3. The "Exhausted Supply" Case
+**Input:** `A = [3, 3], B = [3, 3, 3, 3, 3]`  
+**Output:** `[3, 3]`
+
+* **Map A:** `{3: 2}`
+* **Process B:**
+    * `3`: Found (count 2). Add to result, Map `{3: 1}`.
+    * `3`: Found (count 1). Add to result, Map `{3: 0}`.
+    * `3, 3, 3`: Found in map but count is 0. Ignore.
+
+> **Explanation:** Validates that the "consumer" logic (decrementing the count) prevents the second shipment from claiming more items than the first shipment actually provides.
+
+### 4. The "Empty Shipment" Case
+**Input:** `A = [], B = [1, 2, 3]`  
+**Output:** `[]`
+
+* **Map A:** `{}` (Empty)
+* **Process B:** `1, 2, 3` are not found in the empty map.
+
+> **Explanation:** Confirms that the code handles edge cases where one shipment log is entirely missing or empty without crashing.
+
+### 5. The "Interleaved Items" Case
+**Input:** `A = [1, 2, 1, 2], B = [2, 1, 2, 1]`  
+**Output:** `[2, 1, 2, 1]` (Order may vary)
+
+* **Map A:** `{1: 2, 2: 2}`
+* **Process B:**
+    * `2`: Found (count 2). Add to result. Map `{1: 2, 2: 1}`.
+    * `1`: Found (count 2). Add to result. Map `{1: 1, 2: 1}`.
+    * `2`: Found (count 1). Add to result. Map `{1: 1, 2: 0}`.
+    * `1`: Found (count 1). Add to result. Map `{1: 0, 2: 0}`.
+
+> **Explanation:** Tests the robustness of the frequency map when items are scattered throughout the arrays rather than grouped.

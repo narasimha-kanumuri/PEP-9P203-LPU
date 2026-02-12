@@ -1,4 +1,5 @@
 # PART 1 — L4-D6-Q2  
+
 ## Suspicious Repeat Alert Within Limited Distance
 
 ---
@@ -143,3 +144,72 @@ This guarantees:
 Each ID is **added once** and **removed once** → linear time.
 
 ---
+
+
+# Suspicious Repeat Alert: Test Cases & Analysis
+
+This document outlines the test scenarios for the **Suspicious Repeat Alert** (Nearby Duplicates) problem, focusing on the constraint that a duplicate must exist within a distance of at most $K$.
+
+---
+
+## Sample Test Cases
+
+| Sample Input | Sample Output | One-Line Explanation |
+| :--- | :--- | :--- |
+| `IDs: [1, 5, 9, 1], K: 3` | `true` | ID 1 repeats at index 3. Distance $3 - 0 = 3$. Since $3 \leq K$, it is suspicious. |
+| `IDs: [1, 2, 3, 1], K: 2` | `false` | ID 1 repeats at index 3. Distance $3 - 0 = 3$. Since $3 > K$, it is ignored. |
+
+---
+
+## Variety Test Cases (Dry Run & Analysis)
+
+### 1. The "Immediate Neighbor" (Minimal K)
+**Input:** `IDs: [10, 10, 20, 30], K: 1`  
+**Output:** `true`
+
+* **Index 0:** Add `10` to window. Window: `{10}`
+* **Index 1:** Current ID is `10`. `10` is already in the window!
+* **Result:** `true`
+
+> **Explanation:** Tests the smallest possible window ($K=1$) where a repeat must be back-to-back to trigger the alert.
+
+### 2. The "Window Boundary" (Exact Match)
+**Input:** `IDs: [1, 2, 3, 4, 1], K: 4`  
+**Output:** `true`
+
+* **Indices 0-3:** Add `1, 2, 3, 4` to window. Window: `{1, 2, 3, 4}`
+* **Index 4:** ID is `1`. `1` is currently in the window.
+* **Result:** `true` (Distance is exactly 4)
+
+> **Explanation:** Validates the "at most $K$" constraint. If the duplicate is exactly $K$ distance away, it still counts.
+
+### 3. The "Moving Eraser" (Old Entries Cleared)
+**Input:** `IDs: [1, 2, 3, 1], K: 2`  
+**Output:** `false`
+
+* **Index 0:** Window `{1}`
+* **Index 1:** Window `{1, 2}`
+* **Index 2:** Window reaches size $K$. Add `3`, remove `IDs[0]` (which is `1`). Window: `{2, 3}`
+* **Index 3:** ID is `1`. `1` is NOT in the current window.
+* **Result:** `false`
+
+> **Explanation:** Confirms the system correctly "forgets" IDs once they fall out of the sliding window of size $K$.
+
+### 4. The "Single Element / Small Input"
+**Input:** `IDs: [99], K: 5`  
+**Output:** `false`
+
+* **Index 0:** Add `99` to window.
+* **End:** No more elements to process.
+* **Result:** `false`
+
+> **Explanation:** Checks robustness against inputs where the total number of entries is less than the window size $K$.
+
+### 5. The "Dense Unique" (Max Window)
+**Input:** `IDs: [1, 2, 3, 4, 5, 6], K: 10`  
+**Output:** `false`
+
+* **Process indices 0-5:** All IDs are added to the window. No duplicates are encountered.
+* **Result:** `false`
+
+> **Explanation:** Tests the scenario where $K$ is larger than the actual data set, ensuring the logic doesn't crash when the window never needs to "shrink."

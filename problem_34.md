@@ -213,3 +213,72 @@ It teaches:
 - Frequency tracking
 
 ---
+
+
+# Server Activity Diversity: Test Cases & Analysis
+
+This algorithm monitors a sliding window of server activity logs and counts how many unique (distinct) server IDs are active within that specific time window ($K$).
+
+---
+
+## Sample Test Cases
+
+| Sample Input | Sample Output | One-Line Explanation |
+| :--- | :--- | :--- |
+| `activity: [1, 1, 2, 2], K: 2` | `[1, 2, 1]` | Transitions from identical IDs `[1,1]` (1 distinct) to mixed `[1,2]` (2 distinct) to identical `[2,2]` (1 distinct). |
+| `activity: [1, 2, 3], K: 3` | `[3]` | Since the window size equals the array length, there is only one result representing the entire set. |
+
+---
+
+## Variety Test Cases (Dry Run & Analysis)
+
+### 1. The "Diversity Spike" (Sudden Change)
+**Input:** `activity: [1, 1, 1, 2, 3, 4], K: 3`  
+**Output:** `[1, 2, 3, 3]`
+
+* **First Window [1,1,1]:** Freq `{1:3}`. Distinct Count: **1**.
+* **Slide to [1,1,2]:** Remove one `1` (count 2), add `2` (count 1). Freq `{1:2, 2:1}`. Distinct Count: **2**.
+* **Slide to [1,2,3]:** Remove one `1` (count 1), add `3` (count 1). Freq `{1:1, 2:1, 3:1}`. Distinct Count: **3**.
+* **Slide to [2,3,4]:** Remove last `1` (count 0 → erase), add `4` (count 1). Freq `{2:1, 3:1, 4:1}`. Distinct Count: **3**.
+
+> **Explanation:** Shows how the distinct count increments as new unique server IDs enter the monitoring window and old ones are fully removed.
+
+### 2. The "Bottleneck" (Converging to Identity)
+**Input:** `activity: [1, 2, 3, 4, 4, 4], K: 3`  
+**Output:** `[3, 3, 2, 1]`
+
+* **Initial [1,2,3]:** Size **3**.
+* **Slide [2,3,4]:** Size **3**.
+* **Slide [3,4,4]:** Remove `2`, add `4`. Freq `{3:1, 4:2}`. Size **2**.
+* **Slide [4,4,4]:** Remove `3`, add `4`. Freq `{4:3}`. Size **1**.
+
+> **Explanation:** Demonstrates the logic for decreasing distinct counts as diverse IDs leave the window and are replaced by repeating IDs.
+
+### 3. The "Alternating Pulse" (Oscillation)
+**Input:** `activity: [1, 0, 1, 0, 1], K: 2`  
+**Output:** `[2, 2, 2, 2]`
+
+* **[1,0]:** 2 distinct.
+* **[0,1]:** 2 distinct.
+* **[1,0]:** 2 distinct.
+* **[0,1]:** 2 distinct.
+
+> **Explanation:** Tests the map's ability to handle frequent additions and removals of the same IDs without losing track of the distinct count.
+
+### 4. The "Unique Streak" (Maximum Diversity)
+**Input:** `activity: [10, 20, 30, 40], K: 2`  
+**Output:** `[2, 2, 2]`
+
+* **Dry Run:** Every window will remove one unique ID and add a completely different unique ID. The map size (distinct count) will stay constant at $K$.
+
+> **Explanation:** Validates that the system correctly maintains the maximum possible diversity count when all elements in the window are unique.
+
+### 5. The "Negative ID Range" (Full Range Search)
+**Input:** `activity: [-1, 5, -1, 5], K: 2`  
+**Output:** `[2, 2, 2]`
+
+* **[-1, 5]:** Count 2.
+* **[5, -1]:** Count 2.
+* **[-1, 5]:** Count 2.
+
+> **Explanation:** Confirms the hash map correctly handles negative integers, which are common in server rack IDs or offset-based logging systems.

@@ -125,3 +125,70 @@ Early failure is preferred — the moment inconsistency appears, stop.
 - If traversal completes without conflict → `true`
 
 ---
+
+# Alien Language Translator: Test Cases & Analysis
+
+The goal is to determine if two strings are "isomorphic"—meaning a consistent, one-to-one character substitution exists that can transform the alien string into the human string.
+
+---
+
+## Sample Test Cases
+
+| Sample Input | Sample Output | One-Line Explanation |
+| :--- | :--- | :--- |
+| `alien: "bad", human: "dog"` | `true` | Every character has a unique, consistent partner (`b→d`, `a→o`, `d→g`). |
+| `alien: "aab", human: "xyz"` | `false` | The character `a` attempts to map to both `x` and `y`, violating consistency. |
+
+---
+
+## Variety Test Cases (Dry Run & Analysis)
+
+### 1. The "Many-to-One" Trap (Reverse Mapping)
+**Input:** `alien: "abc", human: "ddd"`  
+**Output:** `false`
+
+* **Index 0:** `a → d`. `alienToHuman` is `{a:d}`, `humanToAlien` is `{d:a}`.
+* **Index 1:** `b` is new, but `d` is already taken by `a` in `humanToAlien`.
+* **Conflict:** Return `false`.
+
+> **Explanation:** This tests the bidirectional constraint. Even if the alien characters are unique, they cannot all point to the same human character.
+
+### 2. The "Self-Mirror" (Identity Mapping)
+**Input:** `alien: "apple", human: "apple"`  
+**Output:** `true`
+
+* **Dry Run:** Every character maps to itself (`a→a`, `p→p`, etc.).
+* **Result:** No conflicts found in either map during the full scan.
+
+> **Explanation:** Validates that characters mapping to themselves is a perfectly legal isomorphic relationship.
+
+### 3. The "Long Distance Conflict"
+**Input:** `alien: "turtle", human: "tsetse"`  
+**Output:** `false`
+
+* **Index 0-2:** `t→t`, `u→s`, `r→e`.
+* **Index 3:** `t` is encountered again. `alienToHuman[t]` is `t`. Current human char is `s`.
+* **Conflict:** `t` cannot map to both `t` and `s`. 
+* **Result:** `false`.
+
+> **Explanation:** Tests the system's memory over longer strings where a character repeats after several other unique entries.
+
+### 4. The "Symbol Stress Test" (Non-Alphabetic)
+**Input:** `alien: "12#12", human: "$%@$%" `  
+**Output:** `true`
+
+* **Index 0-2:** `1 → $`, `2 → %`, `# → @`.
+* **Index 3:** `1` repeats, matches current human char `$`.
+* **Index 4:** `2` repeats, matches current human char `%`.
+
+> **Explanation:** Ensures the algorithm works for all ASCII characters (numbers and symbols), not just the standard alphabet.
+
+### 5. The "Circular Mapping" (Swap Pattern)
+**Input:** `alien: "ab", human: "ba"`  
+**Output:** `true`
+
+* **Index 0:** `a → b`. `humanToAlien` records `b → a`.
+* **Index 1:** `b → a`. `humanToAlien` records `a → b`.
+* **Result:** No overlaps or conflicts in the definitions.
+
+> **Explanation:** Checks if the system handles "swapped" definitions where the alien character exists in the human language but represents a different letter.

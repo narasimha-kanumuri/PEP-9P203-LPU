@@ -112,3 +112,71 @@ Two common key strategies:
 Different words → same key → same group.
 
 ---
+
+
+# Anagram Sorter: Test Cases & Analysis
+
+This problem involves grouping words that are anagrams of each other. Two words are anagrams if they contain the exact same characters with the exact same frequencies.
+
+---
+
+## Sample Test Cases
+
+| Sample Input | Sample Output | One-Line Explanation |
+| :--- | :--- | :--- |
+| `["listen", "silent", "top"]` | `[["listen", "silent"], ["top"]]` | "listen" and "silent" share the exact same character counts. |
+| `["aaa", "aa", "a"]` | `[["aaa"], ["aa"], ["a"]]` | Different lengths result in different frequency signatures, even with the same character type. |
+
+---
+
+## Variety Test Cases (Dry Run & Analysis)
+
+### 1. The "Permutation Party" (All Anagrams)
+**Input:** `["abc", "acb", "bac", "bca", "cab", "cba"]`  
+**Output:** `[["abc", "acb", "bac", "bca", "cab", "cba"]]`
+
+* **Signature:** Every word generates the same count: `a:1, b:1, c:1` (others 0).
+* **Key:** `1#1#1#0#0...`
+* **Result:** The map stores all 6 strings under this single key.
+
+> **Explanation:** Confirms that the algorithm correctly identifies all possible permutations of a set of characters as a single cluster.
+
+### 2. The "Overlapping Letters" (Not Anagrams)
+**Input:** `["aabb", "abab", "aaab"]`  
+**Output:** `[["aabb", "abab"], ["aaab"]]`
+
+* **"aabb":** Signature `{a:2, b:2}`.
+* **"abab":** Signature `{a:2, b:2}`. (Matches "aabb")
+* **"aaab":** Signature `{a:3, b:1}`. (New key)
+
+> **Explanation:** Tests if the frequency count is precise. Having the same letters is not enough; the quantities must match exactly.
+
+### 3. The "Single Character & Empty"
+**Input:** `["a", "", "a", ""]`  
+**Output:** `[["a", "a"], ["", ""]]`
+
+* **"a":** Signature `{a:1}`, rest 0.
+* **"":** Signature all 0s. Key: `0#0#0...`
+* **Result:** Correctly groups the empty strings and the single-letter strings separately.
+
+> **Explanation:** Validates handling of edge cases like empty strings and repeated single-letter strings.
+
+### 4. The "Length Distinction" (Fast Rejection)
+**Input:** `["test", "tests"]`  
+**Output:** `[["test"], ["tests"]]`
+
+* **"test":** `t:2, e:1, s:1`.
+* **"tests":** `t:2, e:1, s:2`.
+* **Result:** The signatures differ specifically at the 's' count index.
+
+> **Explanation:** Demonstrates that words that are prefixes of each other or differ by only one letter are correctly separated.
+
+### 5. The "Character Diversity" (Full Alphabet)
+**Input:** `["patter", "tapter", "zebra"]`  
+**Output:** `[["patter", "tapter"], ["zebra"]]`
+
+* **"patter":** Signature counts `p:1, a:1, t:2, e:1, r:1`.
+* **"tapter":** Signature matches "patter". (Group 1)
+* **"zebra":** Signature counts `z:1, e:1, b:1, r:1, a:1`. (Group 2)
+
+> **Explanation:** Ensures the hash key effectively covers the entire 26-letter range without collisions between different character sets.

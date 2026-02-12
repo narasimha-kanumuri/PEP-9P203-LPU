@@ -232,3 +232,77 @@ But your implementation must be built from scratch.
 
 ---
 
+
+
+
+# LRU Cache: Test Cases & Analysis
+
+The **Least Recently Used (LRU) Cache** organizes items in order of use, allowing you to quickly identify which item hasn't been accessed for the longest time. When the cache reaches capacity, it evicts the least recently used item before adding a new one.
+
+---
+
+## Sample Test Cases
+
+| Sample Input | Sample Output | One-Line Explanation |
+| :--- | :--- | :--- |
+| `Cap: 1, put(1, 10), put(2, 20), get(1)` | `-1` | With a capacity of 1, every new `put` evicts the previous item; `1` is gone when `2` arrives. |
+| `Cap: 2, put(1, 10), put(1, 20), get(1)` | `20` | Updating an existing key changes its value and refreshes its "recency" without triggering eviction. |
+
+---
+
+## Variety Test Cases (Dry Run & Analysis)
+
+### 1. The "Ping-Pong" Effect (Recency Refresh)
+**Input:** `Capacity: 2, put(1, 10), put(2, 20), get(1), put(3, 30), get(2)`  
+**Output:** `get(1) → 10, get(2) → -1`
+
+* **put(1, 10):** List: `[1]`, Map: `{1}`
+* **put(2, 20):** List: `[2, 1]`, Map: `{1, 2}`
+* **get(1):** Node 1 moved to front. List: `[1, 2]`. Returns `10`.
+* **put(3, 30):** Capacity full. Evict LRU (tail), which is `2`. Insert `3`. List: `[3, 1]`.
+* **get(2):** Not in map. Returns `-1`.
+
+> **Explanation:** Tests that `get` operations successfully move an item to the "Most Recently Used" position, protecting it from the next eviction.
+
+### 2. The "Update Priority" (Value Change)
+**Input:** `Capacity: 2, put(1, 10), put(2, 20), put(1, 100), put(3, 30), get(2)`  
+**Output:** `get(2) → -1`
+
+* **put(1, 10), put(2, 20):** List: `[2, 1]`
+* **put(1, 100):** Key 1 exists. Update value to 100 and move to front. List: `[1, 2]`.
+* **put(3, 30):** Evict LRU (tail), which is `2`. List: `[3, 1]`.
+* **get(2):** Not found. Returns `-1`.
+
+> **Explanation:** An update via `put` must act exactly like a `get` regarding recency—it must move the updated element to the head.
+
+### 3. The "Full Cycle" (Capacity Boundary)
+**Input:** `Capacity: 3, put(1, 1), put(2, 2), put(3, 3), put(4, 4), get(1)`  
+**Output:** `get(1) → -1`
+
+* **put(1, 1), put(2, 2), put(3, 3):** List: `[3, 2, 1]`.
+* **put(4, 4):** Capacity (3) reached. Evict `1`. List: `[4, 3, 2]`.
+* **get(1):** Returns `-1`.
+
+> **Explanation:** Verifies the basic "First-In, First-Out" behavior when no intermediate `get` calls disturb the access order.
+
+### 4. The "Single Cell" (Minimal Capacity)
+**Input:** `Capacity: 1, put(1, 10), get(1), put(2, 20), get(1)`  
+**Output:** `get(1) → 10, get(1) → -1`
+
+* **put(1, 10):** List: `[1]`.
+* **get(1):** Returns `10`.
+* **put(2, 20):** Evict `1`, insert `2`. List: `[2]`.
+* **get(1):** Returns `-1`.
+
+> **Explanation:** Checks if the dummy head/tail logic and eviction pointers hold up when the list effectively has only one real node.
+
+### 5. The "Re-insertion" (Zombie Key)
+**Input:** `Capacity: 2, put(1, 10), put(2, 20), put(3, 30), put(1, 100), get(1)`  
+**Output:** `get(1) → 100`
+
+* **put(1, 10), put(2, 20):** List: `[2, 1]`.
+* **put(3, 30):** Evict `1`. List: `[3, 2]`. Map: `{3, 2}`.
+* **put(1, 100):** `1` is not in map (it was evicted). Capacity full. Evict `2`. List: `[1, 3]`.
+* **get(1):** Returns `100`.
+
+> **Explanation:** Ensures that once a key is evicted, the system treats its re-appearance as a brand-new insertion, not an update to a previous record.

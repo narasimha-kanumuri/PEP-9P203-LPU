@@ -170,3 +170,69 @@ This is foundational for:
 It teaches recognition of **hidden cancellation patterns**.
 
 ---
+
+# Zero-Sum Transaction Detection: Test Cases & Analysis
+
+This algorithm identifies if any contiguous sequence of transactions in a financial log results in a net change of zero. This is a classic application of the **Prefix Sum** pattern combined with a **Hash Set** for $O(n)$ detection.
+
+---
+
+## Additional Sample Test Cases
+
+| Sample Input | Output | Explanation |
+| :--- | :--- | :--- |
+| `[10, -10]` | `true` | The first transaction is canceled out exactly by the second, returning the balance to zero. |
+| `[5, 4, -2, -2]` | `true` | The sequence `[4, -2, -2]` sums to zero; the prefix sum becomes 9, then 7, then returns to 5 (already seen). |
+
+---
+
+## 5 Variety Test Cases (with Dry Runs)
+
+### 1. The "Hidden Interior" Case
+**Input:** `[10, 5, -2, -3, 8]`  
+**Output:** `true`
+
+* **amount = 10:** `runningSum = 10`. Not in `seenSums`. Add `{10}`.
+* **amount = 5:** `runningSum = 15`. Not in `seenSums`. Add `{10, 15}`.
+* **amount = -2:** `runningSum = 13`. Not in `seenSums`. Add `{10, 15, 13}`.
+* **amount = -3:** `runningSum = 10`. **ALREADY SEEN!** (seen at step 1).
+
+> **Explanation:** Since the running sum returned to 10, the transactions that occurred after the first 10 (`-2` and `-3`) must have summed to zero.
+
+### 2. The "Immediate Zero" Case
+**Input:** `[0, 5, 10]`  
+**Output:** `true`
+
+* **amount = 0:** `runningSum = 0`.
+* **Check:** `runningSum == 0` is true. Immediate return.
+
+> **Explanation:** A transaction of 0 is technically a subarray that sums to zero. The algorithm detects this at the very first index.
+
+### 3. The "Full Circle" Case
+**Input:** `[1, 2, 3, -6]`  
+**Output:** `true`
+
+* **runningSum sequence:** `1 → 3 → 6 → 0`.
+* **Step 4:** At the final step, `runningSum` becomes 0.
+* **Result:** `true`
+
+> **Explanation:** This tests the case where the entire array, from start to finish, cancels out to a net change of zero.
+
+### 4. The "Oscillating Balance" Case
+**Input:** `[1, -1, 1, -1]`  
+**Output:** `true`
+
+* **amount = 1:** `runningSum = 1`. Add `{1}`.
+* **amount = -1:** `runningSum = 0`. Return `true`.
+
+> **Explanation:** Even though the balance fluctuates, the very first time it hits a duplicate prefix sum (or zero), the algorithm terminates early for maximum efficiency.
+
+### 5. The "No Anomaly" Case (Negative/Positive Mix)
+**Input:** `[5, -2, 10, -4, 1]`  
+**Output:** `false`
+
+* **runningSum sequence:** `5, 3, 13, 9, 10`.
+* **seenSums set:** `{5, 3, 13, 9, 10}`.
+* **Result:** `false` (No sum was 0 and no sum was ever repeated).
+
+> **Explanation:** Even with a mix of debits and credits, if the running balance never returns to a previous state, no zero-sum "loop" exists in the financial log.

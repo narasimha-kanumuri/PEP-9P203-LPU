@@ -120,3 +120,82 @@ This respects:
 - Clean separation of concerns
 
 ---
+
+# First Unique Event: Test Cases & Analysis
+
+The goal is to find the index of the first character in a sequence that does not repeat anywhere else in that sequence. If every character repeats, we return -1.
+
+---
+
+## Additional Sample Test Cases
+
+| Sample Input | Output | Explanation |
+| :--- | :--- | :--- |
+| `"racecar"` | `3` | 'r', 'a', and 'c' all repeat. 'e' at index 3 is the first and only unique character. |
+| `"1122334"` | `6` | Numerical codes follow the same logic; '4' at the final index is the first unique event. |
+
+---
+
+## 5 Variety Test Cases (with Dry Runs)
+
+### 1. The "Immediate Success" Case
+**Input:** `"abcdef"`  
+**Output:** `0`
+
+* **Phase 1 (Counting):** All characters `a` through `f` are mapped to frequency 1.
+* **Phase 2 (Detection):** Start at index 0. The character is `a`.
+* **Check:** `freq['a']` is 1.
+* **Result:** `0`
+
+> **Explanation:** When the very first character is unique, the algorithm terminates at the first possible step of the detection phase.
+
+### 2. The "Deceptive Start" Case
+**Input:** `"aabbccdde"`  
+**Output:** `8`
+
+* **Phase 1 (Counting):** `a:2, b:2, c:2, d:2, e:1`.
+* **Phase 2 (Detection):**
+    * Indices 0-7: All characters have `freq > 1`.
+    * Index 8: Character is `e`. `freq['e']` is 1.
+* **Result:** `8`
+
+> **Explanation:** Tests the algorithm's ability to skip over multiple different pairs of repeating characters to find a unique one at the very end.
+
+### 3. The "Mixed Symbol" Case
+**Input:** `"!@#$!@#"`  
+**Output:** `3`
+
+* **Phase 1 (Counting):** `!:2, @:2, #:2, $:1`.
+* **Phase 2 (Detection):**
+    * `log[0]` ('!'): freq 2
+    * `log[1]` ('@'): freq 2
+    * `log[2]` ('#'): freq 2
+    * `log[3]` ('$'): freq 1.
+* **Result:** `3`
+
+> **Explanation:** Confirms the system treats non-alphanumeric ASCII symbols (like sensor codes) correctly using the hash map.
+
+### 4. The "Long Distance Repeat" Case
+**Input:** `"zabcdefgzh"`  
+**Output:** `1`
+
+* **Phase 1 (Counting):** `z:2, a:1, b:1, c:1, d:1, e:1, f:1, g:1, h:1`.
+* **Phase 2 (Detection):**
+    * `log[0]` ('z'): freq 2 (Skip)
+    * `log[1]` ('a'): freq 1.
+* **Result:** `1`
+
+> **Explanation:** Even though `z` was the first character seen, it repeats much later. The algorithm correctly identifies `a` as the first character that never repeats throughout the entire string.
+
+### 5. The "Complete Saturation" Case
+**Input:** `"nxnxnx"`  
+**Output:** `-1`
+
+* **Phase 1 (Counting):** `n:3, x:3`.
+* **Phase 2 (Detection):**
+    * `log[0]` ('n'): freq 3
+    * `log[1]` ('x'): freq 3
+    * ... (No unique character found).
+* **Result:** `-1`
+
+> **Explanation:** Validates the requirement to return -1 when the log contains only repeating events, regardless of how many times they repeat (odd or even).
