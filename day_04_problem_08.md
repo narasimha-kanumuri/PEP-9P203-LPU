@@ -30,14 +30,14 @@ Return `true` if the list is a palindrome, otherwise return `false`.
 ### Example 1
 
 Input:  1 → 2 → 2 → 1 Output: true
-Copy code
+
 
 ---
 
 ### Example 2
 
 Input:  1 → 2 → 3 Output: false
-Copy code
+
 
 ---
 

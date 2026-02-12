@@ -31,7 +31,7 @@ Given the **head of a singly linked list**, determine whether the list contains 
 
 ### Example 1 (Cycle Exists)
 1 → 2 → 3 → 4 → 5 ↑       ↓ ← ← ← ← Output: 3
-Copy code
+
 
 (The cycle contains nodes: 3 → 4 → 5)
 
@@ -39,7 +39,7 @@ Copy code
 
 ### Example 2 (No Cycle)
 1 → 2 → 3 → 4 → NULL Output: 0
-Copy code
+
 
 ---
 
@@ -95,7 +95,7 @@ At each step:
 
 If at any point:
 slow == fast
-Copy code
+
 
 A cycle is confirmed.
 

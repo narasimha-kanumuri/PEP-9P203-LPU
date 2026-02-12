@@ -136,7 +136,6 @@ So at any moment, the system is tracking:
 
 ---
 
-
 ### Step-by-Step Logic
 
 1. Start with **no deployed versions**
@@ -145,7 +144,7 @@ So at any moment, the system is tracking:
 2. Process operations **one by one**, from left to right.
 
 3. For each operation:
-   
+
    #### Case 1: `"DEPLOY x"`
 
    - A new version is added.
@@ -153,7 +152,7 @@ So at any moment, the system is tracking:
    - No validity issue can occur here.
 
    #### Case 2: `"ROLLBACK"`
-   
+
    - This attempts to remove the **most recent version**.
    - Before removing, check:
      > Is there at least one active version?
@@ -181,19 +180,23 @@ If this invariant breaks even once, the system is invalid.
 ## 6. Notes
 
 ### Why Online Processing Matters
+
 - You cannot wait until the end to count deploys and rollbacks.
 - A rollback might be invalid **even if later deploys exist**.
 
 ### Why Immediate Stop Is Required
+
 - Once system state becomes invalid, future operations are meaningless.
 - Continuing would hide the real error location.
 
 ### Common Student Mistakes
+
 - Counting total deploys and rollbacks at the end ❌
 - Allowing negative version count ❌
 - Using unnecessary complex logic when a simple invariant suffices ❌
 
 ### Hidden Data Structure Insight (for instructors)
+
 - This problem enforces **Last-In-First-Out behavior**
 - The invariant mirrors a **restricted-access structure**
 - Students who truly understand stacks will naturally model it correctly

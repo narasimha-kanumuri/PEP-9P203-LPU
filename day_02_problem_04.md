@@ -33,33 +33,33 @@ Return the head of the merged sorted list.
 ### Example 1
 **Input**
 List A: 1 → 3 → 5 List B: 2 → 4 → 6
-Copy code
+
 
 **Output**
 1 → 2 → 3 → 4 → 5 → 6
-Copy code
+
 
 ---
 
 ### Example 2
 **Input**
 List A: 1 → 2 → 4 List B: 1 → 3 → 4
-Copy code
+
 
 **Output**
 1 → 1 → 2 → 3 → 4 → 4
-Copy code
+
 
 ---
 
 ### Example 3
 **Input**
 List A: NULL List B: 0 → 5
-Copy code
+
 
 **Output**
 0 → 5
-Copy code
+
 
 ---
 

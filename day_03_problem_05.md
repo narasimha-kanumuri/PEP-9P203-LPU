@@ -27,10 +27,10 @@ Return the new head of the reversed list.
 ## Examples
 ### Example 1
 Input:  1 → 2 → 3 → 4 → 5 Output: 5 → 4 → 3 → 2 → 1
-Copy code
+
 ### Example 2
 Input:  10 → 20 Output: 20 → 10
-Copy code
+
 ---
 ## ELI5 Explanation
 Imagine a chain of paper clips linked in one direction.
@@ -58,10 +58,10 @@ This tests **pointer discipline**, not memorization.
 ### Step 1: Understand the Danger Zone
 Each node looks like:
 [data | next]
-Copy code
+
 When you reverse a link:
 current->next = previous
-Copy code
+
 If you do this **without saving the original `next`**,  
 you permanently lose access to the rest of the list.
 That is the core danger.

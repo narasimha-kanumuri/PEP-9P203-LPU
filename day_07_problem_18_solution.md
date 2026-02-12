@@ -4,6 +4,7 @@
 ## L4-D5-Q2: Next Warmer Day Forecast (Linked Sensors)  
 
 ### PART 2 — Code, Validation, and Complexity
+
 ---
 
 ## 1️⃣ solution.cpp
@@ -148,35 +149,49 @@ int main() {
 
 ```
 
+# 3️⃣ Complexity Analysis (Formal + Intuitive)
 
-3️⃣ Complexity Analysis (Formal + Intuitive)
-Let N be the number of nodes.
-⏱ Time Complexity
-Worst Case (Big-O):
-O(N)
-Each node is pushed to and popped from the stack at most once.
-Best Case (Ω):
-Ω(N)
-Even in increasing order, every node must be processed.
-Average Case (Θ):
-Θ(N)
-Small-o (o):
-o(N²)
-💾 Space Complexity
-Auxiliary Space:
-O(N)
-Stack + result vector.
-Total Space:
-O(N)
-🔒 Correctness Invariant
-At any point in traversal:
-Copy code
-Values stored in stack are in strictly decreasing order
-(from bottom to top)
-This guarantees:
-Each unresolved node waits only until a greater value appears
-No redundant comparisons occur
-❗ Why This Is Optimal
-Any algorithm must inspect every node → Ω(N)
-Nested traversal is forbidden
-Stack-based monotonic resolution achieves minimal comparisons
+Let **$N$** be the total number of nodes (elements) in the input.
+
+## ⏱️ Time Complexity
+
+The algorithm uses a monotonic stack approach, ensuring each element is handled with high efficiency.
+
+| Case | Notation | Condition / Reason |
+| :--- | :--- | :--- |
+| **Worst Case** | $O(N)$ | Each node is pushed to and popped from the stack at most once. |
+| **Best Case** | $\Omega(N)$ | Even in increasing order, every node must be processed to ensure validity. |
+| **Average Case** | $\Theta(N)$ | Linear scan is required regardless of the data distribution. |
+| **Small-o** | $o(N^2)$ | Strictly asymptotically smaller than quadratic time. |
+
+## 💾 Space Complexity
+
+- **Auxiliary Space: $O(N)$**
+  - Uses a stack and a result vector to store intermediate and final states.
+- **Total Space: $O(N)$**
+  - The memory footprint scales linearly with the number of input nodes.
+
+---
+
+## 🔒 Correctness Invariant
+
+To maintain the logic of finding the next greater element, the following condition must hold at any point in the traversal:
+
+> **The values stored in the stack are in strictly decreasing order (from bottom to top).**
+
+### Why this works
+
+- **Waiting State:** Each unresolved node waits in the stack only until a greater value appears.
+- **No Redundancy:** No redundant comparisons occur because once a node is popped, its "Next Greater" is permanently found.
+
+---
+
+## ❗ Why This Is Optimal
+
+1. **Linear Necessity:** Any algorithm must inspect every node at least once to determine the result, setting the lower bound at $\Omega(N)$.
+2. **No Nesting:** Nested traversal (brute force) is forbidden to maintain performance, necessitating an "online" or "single-pass" approach.
+3. **Efficiency:** Stack-based monotonic resolution achieves the absolute minimum number of comparisons needed to solve the problem.
+
+---
+
+## End of PART 2

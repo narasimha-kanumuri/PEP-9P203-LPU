@@ -36,6 +36,7 @@ You must analyze the expression in **one left-to-right scan** using **manual log
 ## 3. Clarified Task
 
 Given a string expression consisting of:
+
 - Lowercase letters (`a`–`z`)
 - Operators: `+ - * /`
 - Parentheses: `(` and `)`
@@ -74,6 +75,7 @@ Only **one** status should be returned for an expression.
 ---
 
 ## 6. Implementation Narrative  
+
 ### (ELI5 → English-to-Code)
 
 Think like a compiler, not like a calculator.

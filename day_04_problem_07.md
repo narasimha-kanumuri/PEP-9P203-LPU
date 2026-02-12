@@ -28,19 +28,19 @@ Given the **head of a singly linked list**, remove the **N-th node from the end*
 
 ### Example 1
 Input:  1 → 2 → 3 → 4 → 5 , N = 2 Output: 1 → 2 → 3 → 5
-Copy code
+
 
 ---
 
 ### Example 2
 Input:  1 → 2 , N = 2 Output: 2
-Copy code
+
 
 ---
 
 ### Example 3
 Input:  1 , N = 1 Output: NULL
-Copy code
+
 
 ---
 
@@ -102,7 +102,7 @@ Two cases arise:
 
 Move `fast` and `slow` one step at a time until:
 fast->next == NULL
-Copy code
+
 
 At this point:
 - `slow` is pointing to the **node before the target**
@@ -115,7 +115,7 @@ At this point:
 - Store `slow->next` temporarily
 - Redirect:
 slow->next = slow->next->next
-Copy code
+
 
 - The list remains connected
 - Return the original `head`

@@ -36,22 +36,22 @@ You must solve this using **only pointer traversal**, without counting nodes bef
 ### Example 1 (Odd length)
 **Input**
 10 → 20 → 30 → 40 → 50
-Copy code
+
 
 **Output**
 30
-Copy code
+
 
 ---
 
 ### Example 2 (Even length)
 **Input**
 1 → 2 → 3 → 4
-Copy code
+
 
 **Output**
 3
-Copy code
+
 
 ---
 
@@ -88,7 +88,7 @@ Each node contains:
 - A data value
 - A pointer/reference to the next node
 [data | next] → [data | next] → ...
-Copy code
+
 
 ---
 

@@ -46,13 +46,13 @@ Return `true` if it is a palindrome, otherwise return `false`.
 "A man, a plan, a canal: Panama"
 
 markdown
-Copy code
+
 
 **Output**
 true
 
 yaml
-Copy code
+
 
 ---
 
@@ -61,13 +61,13 @@ Copy code
 "race a car"
 
 markdown
-Copy code
+
 
 **Output**
 false
 
 yaml
-Copy code
+
 
 ---
 
@@ -76,13 +76,13 @@ Copy code
 " "
 
 markdown
-Copy code
+
 
 **Output**
 true
 
 yaml
-Copy code
+
 
 ---
 

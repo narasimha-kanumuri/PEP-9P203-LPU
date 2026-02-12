@@ -1,3 +1,10 @@
+<!--
+---
+marp: true
+
+---
+-->
+
 # LEVEL 4 — DAY 5  
 
 ## L4-D5-Q1: Live Server Rollback Monitor  
@@ -14,8 +21,8 @@
 > - A reusable function for validation
 > - A `main()` that runs **two sample examples** exactly as described
 
-```cpp
 
+```cpp
 # include <bits/stdc++.h>
 using namespace std;
 
@@ -79,7 +86,6 @@ int main() {
 
 ```
 
-
 ## test_solution.cpp
 
 ```Cpp
@@ -136,38 +142,49 @@ int main() {
 
 ```
 
-## Complexity Analysis (Formal + Intuitive)
+# Part 2: Complexity Analysis (Formal + Intuitive)
 
-Let N be the number of operations.
-⏱ Time Complexity
-Worst Case (Big-O):
-O(N)
-Every operation is processed exactly once.
-Best Case (Ω):
-Ω(1)
-If the first operation is an invalid "ROLLBACK".
-Average Case (Θ):
-Θ(N)
-Most real inputs require scanning until the end or near-end.
-Small-o (o):
-o(N²)
-Strictly asymptotically smaller than quadratic time.
-💾 Space Complexity
-Auxiliary Space:
-O(1)
-Only a single integer (activeVersions) is used.
-Total Space:
-O(1) (excluding input storage)
-🔒 Correctness Invariant
-At every step:
-activeVersions ≥ 0
-This invariant ensures:
-No rollback happens without a prior deployment
-The system state is always valid until a violation is detected
-Once broken, correctness is irrecoverable → immediate termination.
-❗ Why This Is Optimal
-Any solution must inspect each operation at least once
-Online constraint prevents batch or deferred validation
-Hence Θ(N) time is both necessary and sufficient
+Let **$N$** be the total number of operations in the sequence.
+
+## ⏱️ Time Complexity
+
+Every operation is processed exactly once to maintain the integrity of the system state. This linear approach ensures we don't skip critical state transitions.
+
+| Case | Notation | Condition / Reason |
+| :--- | :--- | :--- |
+| **Best Case** | $\Omega(1)$ | Occurs if the first operation is an invalid `ROLLBACK`. |
+| **Average Case** | $\Theta(N)$ | Most real inputs require scanning until the end or near-end. |
+| **Small-o** | $o(N^2)$ | Strictly asymptotically smaller than quadratic time. |
+
+## 💾 Space Complexity
+
+- **Auxiliary Space: $O(1)$**
+  
+  - Only a single integer (`activeVersions`) is used to track the current state, regardless of input size.
+- **Total Space: $O(1)$**
+  - Excluding the input storage itself, the algorithm's memory footprint remains constant.
+
+---
+
+## 🔒 Correctness Invariant
+
+To ensure the system remains in a valid state, the following condition must hold at every step:
+> **activeVersions** $\ge 0$
+
+### Impact of Invariant
+
+- **Validation:** Prevents a `ROLLBACK` from occurring without a prior deployment.
+- **Stability:** Guarantees system state validity until a violation is detected.
+- **Failure Protocol:** Once broken, correctness is irrecoverable; requires immediate termination to prevent state corruption.
+
+---
+
+## ❗ Why This Is Optimal
+
+1. **Inspection Necessity:** Any valid solution must inspect each operation at least once to ensure the invariant is never violated.
+2. **Online Constraint:** The requirement for real-time validation prevents the use of batch processing or deferred validation techniques.
+3. **Efficiency:** Consequently, $\Theta(N)$ time is both **necessary and sufficient** for this problem.
+
+---
 
 ## End of PART 2
