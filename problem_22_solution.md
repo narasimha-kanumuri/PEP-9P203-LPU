@@ -12,6 +12,7 @@
 > - `main()` runs **sample expressions** and prints results
 >
 > ⚠️ Notes:
+> 
 > - No regex, no parsing libraries
 > - One left-to-right scan
 > - Stack stores minimal symbols to enforce invariants

@@ -46,6 +46,7 @@ Design a system that supports the following operations:
 - `serve()` → the person who arrived earliest is served  
 
 Your design must:
+
 - Use **exactly one stack**
 - Correctly follow **First-In-First-Out (FIFO)** order
 - Clearly document which operation is **O(1)** and which is **O(N)**

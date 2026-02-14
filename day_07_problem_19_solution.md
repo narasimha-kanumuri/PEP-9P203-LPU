@@ -202,7 +202,6 @@ int main() {
 }
 ```
 
-
 ## Complexity Analysis (Formal + Intuitive)
 
 Let N be the number of elements in the stack.

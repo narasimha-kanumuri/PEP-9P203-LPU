@@ -43,12 +43,10 @@ Given the head of a **singly linked list** of integers:
   Example:
 2 → 1 → 5
 
-
 ### Output
 
 - Head pointer of a new singly linked list
 5 → 5 → 0
-
 
 ---
 
@@ -100,36 +98,40 @@ So we need:
 1. Start traversing the linked list from the head.
 
 2. Maintain:
-   
- - A structure to store **nodes whose answer is not yet known**
- - Each stored element remembers:
-   - The node’s value
-   - Where its answer should be written in the output list
 
-3. For each node you visit with value `currentValue`:
+- A structure to store **nodes whose answer is not yet known**
+- Each stored element remembers:
+  - The node’s value
+  - Where its answer should be written in the output list
 
- #### While there exists a previous node waiting:
- - Compare its value with `currentValue`
- - If `currentValue` is **greater**:
-   - This is the answer for that node
-   - Fill its output value
-   - Remove it from the waiting list
- - Stop when:
-   - Waiting node has value ≥ `currentValue`, or
-   - No waiting nodes remain
+1. For each node you visit with value `currentValue`:
 
-4. After resolving what you can:
- - Mark the current node as **waiting**
- - Its answer is unknown yet
+#### While there exists a previous node waiting
 
-5. Move to the next node and repeat.
+- Compare its value with `currentValue`
+- If `currentValue` is **greater**:
+  - This is the answer for that node
+  - Fill its output value
+  - Remove it from the waiting list
+- Stop when:
+  - Waiting node has value ≥ `currentValue`, or
+  - No waiting nodes remain
 
-6. After traversal ends:
- - Any node still waiting has **no greater value ahead**
- - Their output remains **0**
+1. After resolving what you can:
 
-7. Finally:
- - Return the head of the newly constructed output linked list
+- Mark the current node as **waiting**
+- Its answer is unknown yet
+
+1. Move to the next node and repeat.
+
+2. After traversal ends:
+
+- Any node still waiting has **no greater value ahead**
+- Their output remains **0**
+
+1. Finally:
+
+- Return the head of the newly constructed output linked list
 
 ---
 
@@ -147,14 +149,17 @@ This guarantees **linear time**.
 ## 6. Notes
 
 ### Why Nested Loops Fail
+
 - For each node, scanning ahead leads to **O(N²)** time
 - Disallowed by constraints
 
 ### Why Extra Memory Is Necessary
+
 - Singly linked lists do not allow backward access
 - We must **remember unresolved nodes explicitly**
 
 ### Common Student Mistakes
+
 - Trying to modify the input list ❌
 - Using arrays for output ❌
 - Using double traversal ❌
@@ -168,7 +173,6 @@ This guarantees **linear time**.
 - The required structure is a **monotonic decreasing stack**
 - Stack enforces:
 waiting values are strictly decreasing
-
 
 - Each node is:
 - Pushed once
