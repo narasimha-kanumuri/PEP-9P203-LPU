@@ -6,7 +6,7 @@ Amortized Analysis
 
 ---
 
-# A. Complete Solution Code
+## B. Complete Solution Code
 
 ```cpp
 #include <bits/stdc++.h>
@@ -32,7 +32,12 @@ bool containsDuplicateWithinK(const vector<int>& arr, int K) {
 
     return false;
 }
-B. Executable Test Code
+```
+
+## B. Executable Test Code
+
+```cpp
+
 int main() {
 
     // Normal case
@@ -49,7 +54,11 @@ int main() {
 
     return 0;
 }
-C. Complexity Analysis
+
+```
+
+## C. Complexity Analysis
+
 1️⃣ Algorithm Time Complexity
 Raw Equation
 𝑇
