@@ -1,6 +1,7 @@
 # Complement Pair with Distance Constraint
 
 ## Concepts Used
+
 Unordered Map, Complement Tracking, Lexicographic Ordering, Constraint Validation
 
 ---
@@ -61,7 +62,6 @@ int main() {
 
 ```
 
-
 ## Main.cpp
 
 ```cpp
@@ -103,122 +103,82 @@ std::pair<int,int> complementPairWithDistance(
 
 ```
 
+- ## C. Complexity Analysis (Mathematical Framework)
 
-## C. Complexity Analysis (Mathematical Framework)
-1️⃣ Algorithm Time Complexity
+- ### 1️⃣ Algorithm Time Complexity
 
-Let n = values.size()
+- Let $n = values.size()$
+- **Raw Equation**
+- In worst-case (all elements identical):
+- $T(n) = 1 + 2 + 3 + ... + (n - 1)$
+- **Expansion**
+- $T(n) = \frac{n(n - 1)}{2}$
+- **Dominant Term**
+- $\approx \frac{n^{2}}{2}$
+- **Simplified Big-O**
+- Worst Case: $O(n^{2})$
+- **Case Breakdown**
 
-Raw Equation
+- #### Best Case
 
-In worst-case (all elements identical):
+  - No complement found.
+  - Each element performs $O(1)$ lookup.
+  - **Time:** $ O(n) $
+  - **One-line:** Only constant-time hash operations occur per element.
 
-T(n) = 1 + 2 + 3 + ... + (n − 1)
+- #### Average Case
 
-Expansion
+  - Hash lookup $O(1)$ expected.
+  - Few duplicates.
+  - **Time:** $ O(n) $
+  - **One-line:** Each element processed once with expected constant-time lookup.
 
-T(n) = n(n − 1) / 2
+- #### Worst Case
 
-Dominant Term
+  - All elements identical.
+  - Every complement check scans growing vector.
+  - **Time:** $O(n^{2})$
+  - **One-line:** Duplicate-heavy input forces quadratic nested iteration.
 
-≈ n² / 2
+- #### Amortized Analysis
 
-Simplified Big-O
+  - Hash insertions and vector push_back operations are amortized $O(1)$ .
 
-Worst Case: O(n²)
+- ### 2️⃣ Program Time Complexity (Distinguished)
 
-Case Breakdown
-Best Case
+- Includes:
+  - unordered_map bucket allocation
+  - Possible rehashing
+  - Hash collision chains
+  - Vector dynamic resizing
+- **Algorithm Complexity:**
+  - Average $ O(n) $
+- **Program Complexity:**
+  - Average $ O(n) $    - Worst-case due to hash collisions:$ O(n^{2}) $
+- **One-line:** Real performance depends on hash distribution and collision behavior.
 
-No complement found.
-Each element performs O(1) lookup.
+- ### 3️⃣ Space Complexity (Full Breakdown)
 
-Time: O(n)
+- **A. Input Space**
+  - $ O(n) $
+- **B. Auxiliary Space**
+  - Hash map storing all indices:
+  - $ O(n) $
+- **C. Recursion Stack**
+  - None → $O(1)$
+- **D. STL Internal Allocation**
+  - Bucket array
+  - Vectors storing indices
+  - $ O(n) $
+- **E. Total Space Equation**
+  - $S(n) = n \text{ (input)} + n \text{ (hash storage)}$
+  - $= 2n$
+  - $= O(n)$
+- **One-line:** Each element stored once in auxiliary hash storage.
 
-One-line: Only constant-time hash operations occur per element.
+- ### 4️⃣ Complexity Summary Block (Mandatory)
 
-Average Case
-
-Hash lookup O(1) expected.
-Few duplicates.
-
-Time: O(n)
-
-One-line: Each element processed once with expected constant-time lookup.
-
-Worst Case
-
-All elements identical.
-Every complement check scans growing vector.
-
-Time: O(n²)
-
-One-line: Duplicate-heavy input forces quadratic nested iteration.
-
-Amortized Analysis
-
-Hash insertions and vector push_back operations are amortized O(1).
-
-2️⃣ Program Time Complexity (Distinguished)
-
-Includes:
-
-unordered_map bucket allocation
-
-Possible rehashing
-
-Hash collision chains
-
-Vector dynamic resizing
-
-Algorithm Complexity:
-Average O(n)
-
-Program Complexity:
-Average O(n)
-Worst-case due to hash collisions: O(n²)
-
-One-line: Real performance depends on hash distribution and collision behavior.
-
-3️⃣ Space Complexity (Full Breakdown)
-A. Input Space
-
-O(n)
-
-B. Auxiliary Space
-
-Hash map storing all indices:
-
-O(n)
-
-C. Recursion Stack
-
-None → O(1)
-
-D. STL Internal Allocation
-
-Bucket array
-
-Vectors storing indices
-
-O(n)
-
-E. Total Space Equation
-
-S(n) = n (input) + n (hash storage)
-
-= 2n
-
-= O(n)
-
-One-line: Each element stored once in auxiliary hash storage.
-
-4️⃣ Complexity Summary Block (Mandatory)
-
-Time:
-Best: O(n)
-Average: O(n)
-Worst: O(n²)
-
-Space:
-O(n)
+- **Time:**
+  - Best: $ O(n) $    - Average:$ O(n) $    - Worst:$ O(n^{2}) $
+- **Space:**
+  - $ O(n) $
