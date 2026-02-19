@@ -1,7 +1,7 @@
-.test.md
-.DSA_CONTRACT.md
-.Process for copilot.md
-.PROMPTS.md
+test.md
+DSA_CONTRACT.md
+Process for copilot.md
+PROMPTS.md
 
 # Ignore the .gitignore file itself
 .gitignore
