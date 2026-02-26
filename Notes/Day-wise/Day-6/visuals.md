@@ -146,17 +146,16 @@ Because:
 
 ```mermaid
 graph LR
-
-    subgraph MaxHeap (Left Half)
-        A1[10]
-        A2[5]
-        A3[3]
+    subgraph Left [MaxHeap - Left Half]
+        A1(10)
+        A2(5)
+        A3(3)
     end
 
-    subgraph MinHeap (Right Half)
-        B1[12]
-        B2[15]
-        B3[20]
+    subgraph Right [MinHeap - Right Half]
+        B1(12)
+        B2(15)
+        B3(20)
     end
 ```
 
