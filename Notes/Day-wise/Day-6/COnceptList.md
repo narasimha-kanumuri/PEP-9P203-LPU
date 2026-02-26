@@ -450,13 +450,3 @@ They can solve:
 * Real-time scheduling
 
 ---
-
-If you want next:
-
-* 🔥 Visual heap diagrams
-* 🧠 Step-by-step build-heap breakdown
-* 🎯 Union-find dry-run tables
-* 🧪 Common bug patterns sheet
-* 🏋 10 invariant drills for Day 6
-
-Tell me the format.
