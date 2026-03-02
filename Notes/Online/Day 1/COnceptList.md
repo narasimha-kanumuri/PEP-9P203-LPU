@@ -1,19 +1,19 @@
-Below is your **DAY 6 – Complete Concept Material**
+Below is your **DAY  – Complete Concept Material**
 Aligned with:
 
-* Day 6 topic from curriculum table (Heaps + Disjoint Sets) 
+* Day  topic from curriculum table (Heaps + Disjoint Sets) 
 * 9-Day structure (Heaps + Priority + Top-K + Integration) 
 * Master Engine invariant philosophy 
 
 ---
 
-# 📅 DAY 6 — Heaps + Priority Queues + Disjoint Sets
+# 📅 DAY  — Heaps + Priority Queues + Disjoint Sets
 
 # ⚡ Controlled Ordering & Fast Connectivity
 
 ---
 
-# 🎯 Day 6 Objective
+# 🎯 Day Objective
 
 Understand how to:
 
@@ -422,7 +422,7 @@ Union: O(α(N))
 
 ---
 
-# 🧠 Mental Shift After Day 6
+# 🧠 Mental Shift After Day 
 
 Students must now understand:
 
@@ -435,7 +435,7 @@ Students must now understand:
 
 ---
 
-# 🚀 After Mastering Day 6
+# 🚀 After Mastering Day 
 
 They can solve:
 
