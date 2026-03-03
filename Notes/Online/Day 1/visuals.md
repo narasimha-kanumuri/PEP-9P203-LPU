@@ -198,3 +198,11 @@ Use Heap When:
 - You process streaming data
 
 ---
+
+
+graph TD
+    A[3]
+    A --> B[8]
+    A --> C[5]
+    B --> D[20]
+    B --> E[15]
