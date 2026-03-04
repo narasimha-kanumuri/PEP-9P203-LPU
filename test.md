@@ -1,121 +1,112 @@
 # 📅 DAY 7 — GRAPHS I
-
 ## Traversal, Connectivity & Exploration Patterns
 
 - Aligned with:
-- * 20-Day Curriculum (Graph Foundations)
-- * 9-Day Accelerated Structure — Graphs I
-- * Master Engine invariant philosophy
+- 20-Day Curriculum (Graph Foundations) 
+- 20 Day Data Structures and Algo…
+- 9-Day Accelerated Structure — Graphs I 
+- LPU REVISED 9-DAY ACCELERATED D…
+- Master Engine invariant philosophy 
+- DSA MASTER ENGINE v2.2
 
 ---
 
-# 🎯 DAY 7 OBJECTIVE
+## 🎯 DAY 7 OBJECTIVE
 
 - Move from:
-- > “Trees with one parent”
+- “Trees with one parent”
 - To:
-- > “General networks with arbitrary connections.”
+- “General networks with arbitrary connections.”
 - Today is about:
-- * Graph modeling
-- * BFS and DFS mastery
-- * Component detection
-- * Cycle detection
-- * Visited invariant
-- * Grid → graph transformation
+- Graph modeling
+- BFS and DFS mastery
+- Component detection
+- Cycle detection
+- Visited invariant
+- Grid → graph transformation
 
 ---
 
-# 🧠 1️⃣ What Is a Graph? (Zero Knowledge Entry)
+## 🧠 1️⃣ What Is a Graph? (Zero Knowledge Entry)
 
 - A graph is a structure made of:
-- * **Vertices (Nodes)**
-- * **Edges (Connections between nodes)**
-
-
-
+- Vertices (Nodes)
+- Edges (Connections between nodes)
 - Unlike trees:
-- * Graphs may contain cycles.
-- * Nodes may have multiple parents.
-- * Graph may be disconnected.
+- Graphs may contain cycles.
+- Nodes may have multiple parents.
+- Graph may be disconnected.
 
----
+### Types of Graphs
 
-## Types of Graphs
-
-### 1️⃣ Undirected Graph
-- Edge (A—B) means: A connects to B AND B connects to A.
-
-### 2️⃣ Directed Graph
-- Edge (A → B) means: A connects to B only.
-
-### 3️⃣ Weighted Graph
+- 1️⃣ Undirected Graph
+- Edge (A—B) means:
+- A connects to B AND B connects to A.
+- 2️⃣ Directed Graph
+- Edge (A → B) means:
+- A connects to B only.
+- 3️⃣ Weighted Graph
 - Edges have cost/weight.
-
-### 4️⃣ Unweighted Graph
+- 4️⃣ Unweighted Graph
 - Edges have no cost.
 
-[Image comparing undirected, directed, and weighted graphs]
-
 ---
 
-# 🧠 2️⃣ Memory Representation
+## 🧠 2️⃣ Memory Representation
 
-## 🔹 Adjacency List (Most Common)
+### 🔹 Adjacency List (Most Common)
 
-
-
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 vector<vector<int>> adj(n);
 ```
 
-- **Meaning:** For each node, store list of neighbors.
-- **Space:** $O(V + E)$
+- Meaning:
+- For each node, store list of neighbors.
+- Space:
+- O(V + E)
 
----
+### 🔹 Adjacency Matrix
 
-## 🔹 Adjacency Matrix
-
-
-
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 vector<vector<int>> matrix(n, vector<int>(n));
 ```
 
-- **Space:** $O(V^2)$
-- **Used when:** Graph is dense.
+- Space:
+- O(V²)
+- Used when:
+- Graph dense.
 
 ---
 
-# 🧠 3️⃣ Core Invariant #1 — Visited Prevents Infinite Loops
+## 🧠 3️⃣ Core Invariant #1 — Visited Prevents Infinite Loops
 
-- Graphs can have cycles. If you don't track visited: **You loop forever.**
-- **Invariant:**
-- > Once a node is visited, never process it again.
+- Graphs can have cycles.
+- If you don't track visited:
+- You loop forever.
+- Invariant:
+- Once a node is visited, never process it again.
 
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 vector<bool> visited(n, false);
 ```
 
 - This invariant powers:
-- * BFS & DFS
-- * Connected components
-- * Cycle detection
+- BFS
+- DFS
+- Connected components
+- Cycle detection
 
 ---
 
-# 🧠 4️⃣ Breadth-First Search (BFS)
+## 🧠 4️⃣ Breadth-First Search (BFS)
 
-## ELI5
+### ELI5
 - Explore neighbors layer by layer.
-- Like spreading water outward or a ripple in a pond.
+- Like spreading water outward.
 
+### BFS Algorithm
 
-
----
-
-## BFS Algorithm
-
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 queue<int> q;
 q.push(start);
 visited[start] = true;
@@ -133,23 +124,22 @@ while (!q.empty()) {
 }
 ```
 
-- **BFS Guarantee:** In an unweighted graph, the first time you reach a node is the **shortest path**.
+### BFS Guarantees
+- In unweighted graph:
+- First time you reach a node → shortest path.
+- Why?
+- Because BFS explores level by level.
 
 ---
 
-# 🧠 5️⃣ Depth-First Search (DFS)
+## 🧠 5️⃣ Depth-First Search (DFS)
 
-## ELI5
+### ELI5
 - Go as deep as possible before backtracking.
-- Like exploring a maze by following one path until you hit a dead end.
 
+### Recursive DFS
 
-
----
-
-## Recursive DFS
-
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 void dfs(int node) {
     visited[node] = true;
 
@@ -161,18 +151,24 @@ void dfs(int node) {
 }
 ```
 
-- **Characteristics:** Explores full branches; good for components, cycle detection, and island counting.
+### DFS Characteristics
+- Explores full branch
+- Good for:
+- Components
+- Cycle detection
+- Topological sort (later)
+- Island counting
 
 ---
 
-# 🧠 6️⃣ Connected Components
+## 🧠 6️⃣ Connected Components
 
-- If a graph is disconnected, we must start BFS/DFS from every unvisited node.
+- If graph disconnected:
+- We must start BFS/DFS from every unvisited node.
 
-
-
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 int components = 0;
+
 for (int i = 0; i < n; i++) {
     if (!visited[i]) {
         dfs(i);
@@ -181,26 +177,33 @@ for (int i = 0; i < n; i++) {
 }
 ```
 
-- **Invariant:** Each DFS/BFS traversal marks exactly one component.
-- **Time:** $O(V + E)$
+- Invariant:
+- Each DFS marks exactly one component.
+- Time:
+- O(V + E)
 
 ---
 
-# 🧠 7️⃣ Cycle Detection (Undirected Graph)
+## 🧠 7️⃣ Cycle Detection (Undirected Graph)
 
 ### Key Insight
-- If during DFS, you visit a neighbor that is **already visited** and is **NOT the parent** of the current node → A cycle exists.
+- If during DFS:
+- You visit a neighbor that:
+- Is already visited
+- And is NOT parent
+- → Cycle exists.
 
-[Image illustrating cycle detection in an undirected graph using DFS]
-
-```cpp {lineNumbers:true}
+```cpp id="w6g4kg"
 bool dfs(int node, int parent) {
     visited[node] = true;
+
     for (auto neighbor : adj[node]) {
         if (!visited[neighbor]) {
-            if (dfs(neighbor, node)) return true;
+            if (dfs(neighbor, node))
+                return true;
         }
-        else if (neighbor != parent) return true;
+        else if (neighbor != parent)
+            return true;
     }
     return false;
 }
@@ -208,87 +211,120 @@ bool dfs(int node, int parent) {
 
 ---
 
-# 🧠 8️⃣ Number of Islands (Grid → Graph)
+## 🧠 8️⃣ Number of Islands (Grid → Graph Thinking)
 
-- Given a grid of 0s and 1s, each cell is a node.
-- **Edges:** Up, Down, Left, Right (only between 1s).
-
-[Image showing grid to graph transformation for number of islands problem]
-
-- **Algorithm:**
-- 1. Traverse grid.
-- 2. If `cell == 1` and `!visited`:
--    * Run DFS/BFS to mark all connected 1s.
--    * Increment island count.
-- **Time:** $O(Rows \times Cols)$
-
----
-
-# 🧠 9️⃣ Clone Graph
-
-- **Problem:** Create a deep copy of a graph with cycles.
-- **Approach:** Use a `HashMap<Node*, Node*>` to map original nodes to their clones.
-- **Invariant:** Each original node must map to exactly one clone to avoid infinite recursion.
+- Given grid of 0s and 1s.
+- Each cell is a node.
+- Edges:
+- Up, Down, Left, Right (if 1).
+- Algorithm:
+- Traverse grid.
+- If cell == 1 and not visited:
+- Run DFS/BFS.
+- Increment island count.
+- Time:
+- O(rows × cols)
 
 ---
 
-# 🧠 🔟 BFS vs DFS Comparison
+## 🧠 9️⃣ Clone Graph
+
+- Graph node contains:
+
+```cpp id="w6g4kg"
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+};
+```
+
+- Use:
+- HashMap to map original node → cloned node.
+- Why needed?
+- Because graph may have cycles.
+- Invariant:
+- Each original node must map to exactly one clone.
+
+---
+
+## 🧠 🔟 BFS vs DFS Comparison
 
 | Feature | BFS | DFS |
 | :--- | :--- | :--- |
-| **Data Structure** | Queue | Stack / Recursion |
-| **Shortest Path** | Yes (Unweighted) | No |
-| **Space Usage** | $O(V)$ (Width) | $O(H)$ (Depth) |
-| **Use Case** | Level order / Shortest | Deep exploration / Paths |
+| Data Structure | Queue | Stack/Recursion |
+| Finds shortest path (unweighted) | Yes | No |
+| Space usage | O(V) | O(H) |
+| Good for | Level order | Deep exploration |
 
 ---
 
-# 🧠 1️⃣1️⃣ Complexity Understanding
+## 🧠 1️⃣1️⃣ Complexity Understanding
 
-- **Time:** $T(V, E) = V + E$
-- * Each node visited once ($V$).
-- * Each edge explored once ($E$).
-
-- **Space:**
-- * Visited array: $O(V)$
-- * BFS Queue: $O(V)$
-- * DFS Stack: $O(H)$
-
----
-
-# 🧠 1️⃣2️⃣ Core Invariants for Day 7
-
-- 1️⃣ **Visited** prevents reprocessing and infinite loops.
-- 2️⃣ **BFS** guarantees shortest path in unweighted graphs.
-- 3️⃣ **DFS** explores the entire connected component.
-- 4️⃣ **Parent tracking** is required for undirected cycle detection.
-- 5️⃣ **Grid problems** are just graph problems on a structured lattice.
+- Let:
+- V = number of vertices
+- E = number of edges
+- Traversal:
+- Time:
+- $T(V, E) = V + E$
+- Why?
+- Each node visited once → V
+- Each edge explored once → E
+- Space:
+- Visited array → O(V)
+- BFS queue worst-case → O(V)
+- DFS recursion stack → O(H)
 
 ---
 
-# ⚠️ Common Beginner Mistakes
+## 🧠 1️⃣2️⃣ Core Invariants for Day 7
 
-- ❌ Forgetting the `visited` array.
-- ❌ Marking `visited` **after** popping (should mark immediately when pushing/calling).
-- ❌ Mixing directed vs undirected cycle logic.
-- ❌ Forgetting the parent check in undirected cycles.
-- ❌ Not resetting `visited` for multi-test cases.
+- From 9-day structure 
+- LPU REVISED 9-DAY ACCELERATED D…
+- 1️⃣ Visited prevents reprocessing.
+- 2️⃣ BFS guarantees shortest path in unweighted graph.
+- 3️⃣ DFS explores entire connected component.
+- 4️⃣ Parent tracking required for cycle detection.
+- 5️⃣ Grid problems are disguised graph problems.
+- From Master Engine 
+- DSA MASTER ENGINE v2.2
+- Invariant must be explicitly maintained.
+- No traversal without termination guarantee.
+- Complexity must include V + E reasoning.
 
 ---
 
-# 🧠 Mental Shift After Day 7
+## ⚠️ Common Beginner Mistakes
+
+- ❌ Forgetting visited array
+- ❌ Marking visited after pushing (should mark immediately)
+- ❌ Mixing directed vs undirected logic
+- ❌ Forgetting parent check in cycle detection
+- ❌ Not resetting visited for multi-test cases
+- ❌ Using adjacency matrix unnecessarily
+
+---
+
+## 🧠 Mental Shift After Day 7
 
 - Students must now:
-- * Convert abstract problems into graph models.
-- * Recognize grids as implicit graphs.
-- * Understand the $V + E$ complexity logic.
-- * Detect cycles and components systematically.
-- * Choose BFS vs DFS intentionally based on the goal.
+- Convert problems into graph models.
+- Recognize grids as graphs.
+- Understand V + E complexity.
+- Detect cycles properly.
+- Identify connected components.
+- Choose BFS vs DFS intentionally.
 
 ---
 
-- Would you like me to generate:
-- * Day 8 (Shortest Path + Topological Sort)?
-- * 10 invariant drills for Graphs?
-- * A common Graph bug-fixing sheet?
-- **Tell me the format.**
+## 🚀 After Mastering Day 7
+
+- They can solve:
+- Number of islands
+- Clone graph
+- Connected components
+- Cycle detection
+- Shortest path (unweighted)
+- Multi-source BFS
+- Flood fill
+- Word ladder (foundation)
