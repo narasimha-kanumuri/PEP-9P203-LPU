@@ -1,330 +1,190 @@
-# 📅 DAY 7 — GRAPHS I
-## Traversal, Connectivity & Exploration Patterns
+# Assignment Evaluation Framework – Technical Papers
 
-- Aligned with:
-- 20-Day Curriculum (Graph Foundations) 
-- 20 Day Data Structures and Algo…
-- 9-Day Accelerated Structure — Graphs I 
-- LPU REVISED 9-DAY ACCELERATED D…
-- Master Engine invariant philosophy 
-- DSA MASTER ENGINE v2.2
+## Purpose
+- This document defines the evaluation rules for student technical paper submissions for Projects P01–P05.
+- All evaluation performed in NotebookLM must follow these rules.
 
 ---
 
-## 🎯 DAY 7 OBJECTIVE
+## Project Structure
+- Each student submits 5 technical papers.
 
-- Move from:
-- “Trees with one parent”
-- To:
-- “General networks with arbitrary connections.”
-- Today is about:
-- Graph modeling
-- BFS and DFS mastery
-- Component detection
-- Cycle detection
-- Visited invariant
-- Grid → graph transformation
+| Project | Minimum Text Length |
+| --- | --- |
+| P01 | 3 pages |
+| P02 | 1.5 pages |
+| P03 | 1.5 pages |
+| P04 | 1.5 pages |
+| P05 | 1.5 pages |
 
----
-
-## 🧠 1️⃣ What Is a Graph? (Zero Knowledge Entry)
-
-- A graph is a structure made of:
-- Vertices (Nodes)
-- Edges (Connections between nodes)
-- Unlike trees:
-- Graphs may contain cycles.
-- Nodes may have multiple parents.
-- Graph may be disconnected.
-
-### Types of Graphs
-
-- 1️⃣ Undirected Graph
-- Edge (A—B) means:
-- A connects to B AND B connects to A.
-- 2️⃣ Directed Graph
-- Edge (A → B) means:
-- A connects to B only.
-- 3️⃣ Weighted Graph
-- Edges have cost/weight.
-- 4️⃣ Unweighted Graph
-- Edges have no cost.
+- **Text means actual explanation content.**
+- The following do not count as content:
+- Raw code blocks
+- Large copied diagrams
+- Large tables without explanation
+- Screenshots without explanation
 
 ---
 
-## 🧠 2️⃣ Memory Representation
-
-### 🔹 Adjacency List (Most Common)
-
-```cpp id="w6g4kg"
-vector<vector<int>> adj(n);
-```
-
-- Meaning:
-- For each node, store list of neighbors.
-- Space:
-- O(V + E)
-
-### 🔹 Adjacency Matrix
-
-```cpp id="w6g4kg"
-vector<vector<int>> matrix(n, vector<int>(n));
-```
-
-- Space:
-- O(V²)
-- Used when:
-- Graph dense.
+## Expected Paper Format (IEEE Style)
+- Each paper should roughly follow IEEE technical structure.
+- **Expected sections:**
+- Title
+- Abstract
+- Keywords
+- Introduction
+- Methodology / System Explanation
+- Discussion / Analysis
+- Conclusion
+- References
+- Perfect IEEE formatting is not required, but logical structure should exist.
 
 ---
 
-## 🧠 3️⃣ Core Invariant #1 — Visited Prevents Infinite Loops
+## Scoring Model
+- Each project is scored out of 100 marks.
 
-- Graphs can have cycles.
-- If you don't track visited:
-- You loop forever.
-- Invariant:
-- Once a node is visited, never process it again.
-
-```cpp id="w6g4kg"
-vector<bool> visited(n, false);
-```
-
-- This invariant powers:
-- BFS
-- DFS
-- Connected components
-- Cycle detection
+| Category | Marks |
+| --- | --- |
+| Structure Compliance | 10 |
+| Content Length & Density | 10 |
+| Technical Depth | 30 |
+| Effort Evidence | 25 |
+| Generic Template Risk | 10 |
+| Similarity Risk | 15 |
 
 ---
 
-## 🧠 4️⃣ Breadth-First Search (BFS)
+## Category Definitions
 
-### ELI5
-- Explore neighbors layer by layer.
-- Like spreading water outward.
+### Structure Compliance (10)
+- Evaluate presence of logical sections.
+- **Scoring guideline:**
 
-### BFS Algorithm
-
-```cpp id="w6g4kg"
-queue<int> q;
-q.push(start);
-visited[start] = true;
-
-while (!q.empty()) {
-    int node = q.front();
-    q.pop();
-
-    for (auto neighbor : adj[node]) {
-        if (!visited[neighbor]) {
-            visited[neighbor] = true;
-            q.push(neighbor);
-        }
-    }
-}
-```
-
-### BFS Guarantees
-- In unweighted graph:
-- First time you reach a node → shortest path.
-- Why?
-- Because BFS explores level by level.
+| Condition | Score |
+| --- | --- |
+| No clear structure | 0–3 |
+| Basic sections present | 4–6 |
+| Good structured paper | 7–9 |
+| Excellent structure | 10 |
 
 ---
 
-## 🧠 5️⃣ Depth-First Search (DFS)
+### Content Length & Density (10)
+- Check if minimum page requirement is satisfied.
+- **Guidelines:**
 
-### ELI5
-- Go as deep as possible before backtracking.
-
-### Recursive DFS
-
-```cpp id="w6g4kg"
-void dfs(int node) {
-    visited[node] = true;
-
-    for (auto neighbor : adj[node]) {
-        if (!visited[neighbor]) {
-            dfs(neighbor);
-        }
-    }
-}
-```
-
-### DFS Characteristics
-- Explores full branch
-- Good for:
-- Components
-- Cycle detection
-- Topological sort (later)
-- Island counting
+| Condition | Score |
+| --- | --- |
+| Below minimum | 0–4 |
+| Meets minimum | 5–6 |
+| Above minimum with meaningful content | 7–10 |
+| Above minimum but padded | 5–6 |
 
 ---
 
-## 🧠 6️⃣ Connected Components
+### Technical Depth (30)
+- Measures conceptual understanding.
+- **Indicators of good depth:**
+- Clear explanation of concept
+- System architecture discussion
+- Comparisons
+- Limitations
+- Practical implications
+- **Scoring:**
 
-- If graph disconnected:
-- We must start BFS/DFS from every unvisited node.
-
-```cpp id="w6g4kg"
-int components = 0;
-
-for (int i = 0; i < n; i++) {
-    if (!visited[i]) {
-        dfs(i);
-        components++;
-    }
-}
-```
-
-- Invariant:
-- Each DFS marks exactly one component.
-- Time:
-- O(V + E)
+| Condition | Score |
+| --- | --- |
+| Surface explanation | 5–10 |
+| Moderate depth | 11–20 |
+| Good conceptual explanation | 21–26 |
+| Strong technical depth | 27–30 |
 
 ---
 
-## 🧠 7️⃣ Cycle Detection (Undirected Graph)
+### Effort Evidence (25)
+- Signs that student worked independently.
+- **Examples:**
+- Custom explanation
+- Logical reasoning
+- Original diagrams
+- Application examples
+- Analysis of idea
+- **Scoring:**
 
-### Key Insight
-- If during DFS:
-- You visit a neighbor that:
-- Is already visited
-- And is NOT parent
-- → Cycle exists.
-
-```cpp id="w6g4kg"
-bool dfs(int node, int parent) {
-    visited[node] = true;
-
-    for (auto neighbor : adj[node]) {
-        if (!visited[neighbor]) {
-            if (dfs(neighbor, node))
-                return true;
-        }
-        else if (neighbor != parent)
-            return true;
-    }
-    return false;
-}
-```
+| Condition | Score |
+| --- | --- |
+| Minimal effort | 5–10 |
+| Moderate effort | 11–18 |
+| Good effort | 19–23 |
+| Strong evidence of work | 24–25 |
 
 ---
 
-## 🧠 8️⃣ Number of Islands (Grid → Graph Thinking)
-
-- Given grid of 0s and 1s.
-- Each cell is a node.
-- Edges:
-- Up, Down, Left, Right (if 1).
-- Algorithm:
-- Traverse grid.
-- If cell == 1 and not visited:
-- Run DFS/BFS.
-- Increment island count.
-- Time:
-- O(rows × cols)
+### Generic Template Risk (10)
+- Detect if explanation appears like generic tutorial or AI-style template text.
+- **Indicators:**
+- Overly generic statements
+- Standard definitions without context
+- No personalized explanation
+- **Higher score = more generic.**
+- **Final marks subtract this value.**
 
 ---
 
-## 🧠 9️⃣ Clone Graph
-
-- Graph node contains:
-
-```cpp id="w6g4kg"
-class Node {
-public:
-    int val;
-    vector<Node*> neighbors;
-};
-```
-
-- Use:
-- HashMap to map original node → cloned node.
-- Why needed?
-- Because graph may have cycles.
-- Invariant:
-- Each original node must map to exactly one clone.
+### Similarity Risk (15)
+- Measures similarity between students.
+- **Indicators:**
+- Same structure
+- Similar explanation order
+- Similar phrasing
+- Same diagrams or examples
+- **Higher score = more similarity.**
+- **Final marks subtract this value.**
 
 ---
 
-## 🧠 🔟 BFS vs DFS Comparison
-
-| Feature | BFS | DFS |
-| :--- | :--- | :--- |
-| Data Structure | Queue | Stack/Recursion |
-| Finds shortest path (unweighted) | Yes | No |
-| Space usage | O(V) | O(H) |
-| Good for | Level order | Deep exploration |
-
----
-
-## 🧠 1️⃣1️⃣ Complexity Understanding
-
-- Let:
-- V = number of vertices
-- E = number of edges
-- Traversal:
-- Time:
-- $T(V, E) = V + E$
-- Why?
-- Each node visited once → V
-- Each edge explored once → E
-- Space:
-- Visited array → O(V)
-- BFS queue worst-case → O(V)
-- DFS recursion stack → O(H)
+## Growth Evaluation
+- Each student will also receive a Growth Score (0–10).
+- Growth measures improvement from P01 → P05.
+- **Indicators:**
+- Improved structure
+- Better explanations
+- Increased depth
+- Better organization
 
 ---
 
-## 🧠 1️⃣2️⃣ Core Invariants for Day 7
-
-- From 9-day structure 
-- LPU REVISED 9-DAY ACCELERATED D…
-- 1️⃣ Visited prevents reprocessing.
-- 2️⃣ BFS guarantees shortest path in unweighted graph.
-- 3️⃣ DFS explores entire connected component.
-- 4️⃣ Parent tracking required for cycle detection.
-- 5️⃣ Grid problems are disguised graph problems.
-- From Master Engine 
-- DSA MASTER ENGINE v2.2
-- Invariant must be explicitly maintained.
-- No traversal without termination guarantee.
-- Complexity must include V + E reasoning.
+## Cross Project Reuse
+- Students should not reuse the same explanation across multiple projects.
+- **If reuse is detected:**
+- Penalty may be applied to Effort Score.
 
 ---
 
-## ⚠️ Common Beginner Mistakes
-
-- ❌ Forgetting visited array
-- ❌ Marking visited after pushing (should mark immediately)
-- ❌ Mixing directed vs undirected logic
-- ❌ Forgetting parent check in cycle detection
-- ❌ Not resetting visited for multi-test cases
-- ❌ Using adjacency matrix unnecessarily
-
----
-
-## 🧠 Mental Shift After Day 7
-
-- Students must now:
-- Convert problems into graph models.
-- Recognize grids as graphs.
-- Understand V + E complexity.
-- Detect cycles properly.
-- Identify connected components.
-- Choose BFS vs DFS intentionally.
+## Output Format
+- Evaluation results should follow the structure defined in Scoring_Template.csv.
+- **Columns:**
+- Name
+- Roll
+- Project
+- Structure
+- Length
+- Depth
+- Effort
+- GenericRisk
+- SimilarityRisk
+- ReuseRisk
+- Growth
+- FinalScore
 
 ---
 
-## 🚀 After Mastering Day 7
-
-- They can solve:
-- Number of islands
-- Clone graph
-- Connected components
-- Cycle detection
-- Shortest path (unweighted)
-- Multi-source BFS
-- Flood fill
-- Word ladder (foundation)
+## Evaluation Philosophy
+- The goal is not to detect AI usage.
+- **Evaluation focuses on:**
+- Effort
+- Depth
+- Original thinking
+- Growth over projects
+- Students should be rewarded for clear understanding and improvement.
