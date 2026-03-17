@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captain DP's Plus Sign Quest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .cell-active { outline: 4px solid #f59e0b; outline-offset: -4px; background: rgba(245, 158, 11, 0.3) !important; animation: pulse 1.5s infinite; }
+        .cell-dep { background: rgba(56, 189, 248, 0.3) !important; border: 1px solid #0ea5e9; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        canvas { border-radius: 1rem; }
+    </style>
+</head>
+<body class="p-4">
+
+    <header class="max-w-7xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-amber-600 to-yellow-500 p-6 rounded-3xl shadow-2xl">
+        <div class="flex items-center gap-4">
+            <div class="bg-black p-3 rounded-full text-3xl">🏴‍☠️</div>
+            <div>
+                <h1 class="text-3xl font-black text-black uppercase">Plus Sign Quest</h1>
+                <p class="text-amber-950 font-bold opacity-80">Phase: <span id="current-phase">Initializing...</span></p>
+            </div>
+        </div>
+        <div class="mt-4 md:mt-0 bg-black/20 p-4 rounded-2xl text-center min-w-[150px]">
+            <span class="text-xs uppercase font-bold text-black/60">Step Counter</span>
+            <div id="step-counter" class="text-3xl font-mono font-black text-black">0 / 0</div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-12 gap-6">
+        
+        <div class="col-span-12 lg:col-span-7 space-y-6">
+            <div id="three-container" class="w-full h-[450px] bg-slate-900 rounded-3xl relative shadow-inner border border-slate-700">
+                <div class="absolute bottom-4 right-4 z-10 glass px-4 py-2 rounded-full text-xs font-bold text-amber-400">
+                    <i class="fas fa-cube mr-2"></i> 3D DEPTH: Arm Length
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-3xl shadow-xl">
+                <div class="flex items-center gap-4 mb-6">
+                    <button onclick="changeStep(-1)" class="w-20 h-16 bg-slate-700 hover:bg-slate-600 rounded-2xl transition-all active:scale-90 flex items-center justify-center text-2xl">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="flex-1 relative">
+                        <input type="range" id="progress-slider" class="w-full h-4 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                        <div class="flex justify-between text-[10px] mt-2 font-bold text-slate-500 uppercase tracking-widest">
+                            <span>Start</span>
+                            <span>Midway</span>
+                            <span>Final Gold</span>
+                        </div>
+                    </div>
+                    <button onclick="changeStep(1)" class="flex-1 h-16 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-2xl font-black text-xl transition-all active:scale-95 shadow-lg flex items-center justify-center gap-3">
+                        NEXT MOVE <i class="fas fa-bolt"></i>
+                    </button>
+                </div>
+
+                <div class="bg-amber-500/10 border-l-4 border-amber-500 p-5 rounded-r-2xl">
+                    <h3 class="text-amber-500 font-bold text-xs uppercase mb-1">Captain's Command</h3>
+                    <p id="logic-text" class="text-lg font-medium leading-snug">Stand by for treasure hunting...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-5 space-y-6">
+            <div class="glass p-6 rounded-3xl border border-white/5 shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-slate-400 uppercase text-sm tracking-widest"><i class="fas fa-th mr-2 text-amber-500"></i> The Secret Diary</h3>
+                    <div class="flex gap-2">
+                        <span id="label-wild" class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-[10px] font-bold">WILD: 2</span>
+                        <span id="label-gold" class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-[10px] font-bold">GOLD: 1</span>
+                    </div>
+                </div>
+                
+                <div id="grid-container" class="grid gap-2 mb-8 aspect-square"></div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-800/50 rounded-2xl border border-white/5">
+                        <span class="text-slate-500 text-[10px] block uppercase font-black mb-1">Coordinates</span>
+                        <span id="trace-coords" class="text-2xl font-mono font-bold text-white">R:0, C:0</span>
+                    </div>
+                    <div class="p-4 bg-slate-800/50 rounded-2xl border border-white/5">
+                        <span class="text-slate-500 text-[10px] block uppercase font-black mb-1">Arm Length</span>
+                        <span id="trace-val" class="text-2xl font-mono font-bold text-amber-400">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-indigo-900/40 to-slate-900/40 p-6 rounded-3xl border border-indigo-500/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-chart-line text-indigo-400"></i>
+                    <span class="text-xs font-bold uppercase tracking-tighter text-indigo-300">Discovery Progress</span>
+                </div>
+                <div class="space-y-3" id="stats-box">
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const PROBLEM_DATA = {
+            matrix: [
+                [0, 1, 0, 0],
+                [1, 2, 1, 1],
+                [0, 1, 1, 0],
+                [0, 1, 0, 0]
+            ]
+        };
+
+        function calculateSteps() {
+            const N = PROBLEM_DATA.matrix.length;
+            const M = PROBLEM_DATA.matrix[0].length;
+            const steps = [];
+            
+            let L = Array.from({length: N}, () => Array(M).fill(0));
+            let U = Array.from({length: N}, () => Array(M).fill(0));
+            let R = Array.from({length: N}, () => Array(M).fill(0));
+            let D = Array.from({length: N}, () => Array(M).fill(0));
+            let F = Array.from({length: N}, () => Array(M).fill(0));
+
+            // Helper to check if a cell is valid (1 or 2)
+            const isValid = (r, c) => PROBLEM_DATA.matrix[r][c] > 0;
+
+            // Phase 1: Left and Up
+            for (let i = 0; i < N; i++) {
+                for (let j = 0; j < M; j++) {
+                    if (isValid(i, j)) {
+                        L[i][j] = (j > 0 ? L[i][j-1] : 0) + 1;
+                        U[i][j] = (i > 0 ? U[i-1][j] : 0) + 1;
+                        steps.push({
+                            phase: "Scanning North & West",
+                            i, j, val: `L:${L[i][j]} U:${U[i][j]}`,
+                            log: `At (${i},${j}), looking Left and Up. ${PROBLEM_DATA.matrix[i][j] === 2 ? 'The Wildcard ✨ helps us!' : 'Found a coin!' }`,
+                            grid: JSON.parse(JSON.stringify(L)), 
+                            deps: [[i, j-1], [i-1, j]]
+                        });
+                    }
+                }
+            }
+
+            // Phase 2: Right and Down
+            for (let i = N - 1; i >= 0; i--) {
+                for (let j = M - 1; j >= 0; j--) {
+                    if (isValid(i, j)) {
+                        R[i][j] = (j < M - 1 ? R[i][j+1] : 0) + 1;
+                        D[i][j] = (i < N - 1 ? D[i+1][j] : 0) + 1;
+                        steps.push({
+                            phase: "Scanning South & East",
+                            i, j, val: `R:${R[i][j]} D:${D[i][j]}`,
+                            log: `Now checking Right and Down from the bottom. This cell can stretch ${R[i][j]} units right.`,
+                            grid: JSON.parse(JSON.stringify(R)),
+                            deps: [[i, j+1], [i+1, j]]
+                        });
+                    }
+                }
+            }
+
+            // Phase 3: Min Intersection
+            let maxPlus = 0;
+            for (let i = 0; i < N; i++) {
+                for (let j = 0; j < M; j++) {
+                    if (isValid(i, j)) {
+                        F[i][j] = Math.min(L[i][j], R[i][j], U[i][j], D[i][j]);
+                        maxPlus = Math.max(maxPlus, F[i][j]);
+                        steps.push({
+                            phase: "Measuring Plus Signs",
+                            i, j, val: F[i][j],
+                            log: `The smallest arm at (${i},${j}) is ${F[i][j]}. Current largest plus: ${maxPlus}`,
+                            grid: JSON.parse(JSON.stringify(F)),
+                            deps: []
+                        });
+                    }
+                }
+            }
+            return steps;
+        }
+
+        // Engine State
+        let currentStep = 0;
+        const allSteps = calculateSteps();
+        
+        // Three.js Scene Setup
+        const container = document.getElementById('three-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        const group = new THREE.Group();
+        scene.add(group);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const pointLight = new THREE.PointLight(0xf59e0b, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        camera.position.set(4, 6, 8);
+        camera.lookAt(2, 0, 2);
+
+        function updateUI() {
+            const step = allSteps[currentStep];
+            if (!step) return;
+
+            // Text Info
+            document.getElementById('step-counter').innerText = `${currentStep + 1} / ${allSteps.length}`;
+            document.getElementById('current-phase').innerText = step.phase;
+            document.getElementById('logic-text').innerText = step.log;
+            document.getElementById('trace-coords').innerText = `R:${step.i}, C:${step.j}`;
+            document.getElementById('trace-val').innerText = step.val;
+            document.getElementById('progress-slider').max = allSteps.length - 1;
+            document.getElementById('progress-slider').value = currentStep;
+
+            // 2D Grid
+            const grid = document.getElementById('grid-container');
+            const N = PROBLEM_DATA.matrix.length;
+            const M = PROBLEM_DATA.matrix[0].length;
+            grid.style.gridTemplateColumns = `repeat(${M}, 1fr)`;
+            grid.innerHTML = '';
+
+            for(let r=0; r<N; r++) {
+                for(let c=0; c<M; c++) {
+                    const cell = document.createElement('div');
+                    const val = PROBLEM_DATA.matrix[r][c];
+                    cell.className = `flex items-center justify-center rounded-xl text-lg font-black transition-all duration-300 ${val === 0 ? 'bg-slate-900 text-slate-700' : 'bg-slate-800 text-amber-500 border border-white/5'}`;
+                    
+                    if(r === step.i && c === step.j) cell.classList.add('cell-active');
+                    step.deps.forEach(d => { if(d[0] === r && d[1] === c) cell.classList.add('cell-dep'); });
+
+                    cell.innerHTML = val === 2 ? '✨' : (step.grid[r][c] || (val === 0 ? '×' : '1'));
+                    grid.appendChild(cell);
+                }
+            }
+
+            // 3D Blocks
+            while(group.children.length > 0) group.remove(group.children[0]);
+            for(let r=0; r<N; r++) {
+                for(let c=0; c<M; c++) {
+                    const h = (step.grid[r][c] || 0) + 0.1;
+                    const geometry = new THREE.BoxGeometry(0.7, h, 0.7);
+                    const mat = new THREE.MeshPhongMaterial({ 
+                        color: (r === step.i && c === step.j) ? 0xf59e0b : 0x334155,
+                        shininess: 100
+                    });
+                    const cube = new THREE.Mesh(geometry, mat);
+                    cube.position.set(c, h/2, r);
+                    group.add(cube);
+                }
+            }
+        }
+
+        function changeStep(d) {
+            currentStep = Math.max(0, Math.min(allSteps.length - 1, currentStep + d));
+            updateUI();
+        }
+
+        document.getElementById('progress-slider').oninput = (e) => {
+            currentStep = parseInt(e.target.value);
+            updateUI();
+        };
+
+        function animate() {
+            requestAnimationFrame(animate);
+            group.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+
+        updateUI();
+        animate();
+    </script>
+</body>
+</html>

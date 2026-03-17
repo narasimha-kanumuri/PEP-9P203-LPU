@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captain DP: The Alternating Square Hunt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        body { background: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .canvas-container { height: 450px; border-radius: 16px; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); }
+        .grid-cell { transition: all 0.2s ease; width: 45px; height: 45px; border: 1px solid #334155; position: relative; }
+        .active-cell { outline: 4px solid #fbbf24; z-index: 20; transform: scale(1.1); box-shadow: 0 0 20px #fbbf24; }
+        .dependency-cell { background: #1e293b; outline: 2px dashed #38bdf8; }
+        .val-0 { background-color: #000000; color: white; }
+        .val-1 { background-color: #ffffff; color: black; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="p-6">
+
+<script>
+    // --- 🛠️ PROBLEM DATA INJECTION 🛠️ ---
+    const PROBLEM_DATA = {
+        grid: [
+            [1, 1, 0],
+            [0, 1, 0],
+            [1, 0, 1]
+        ],
+        n: 3, m: 3
+    };
+
+    function calculateSteps() {
+        const { grid, n, m } = PROBLEM_DATA;
+        const steps = [];
+        let dp = Array.from({ length: n }, () => Array(m).fill(0));
+        let maxSide = 0;
+
+        // Logic: A cell (i, j) can be the bottom-right of an alternating square
+        // if it matches the expected chessboard pattern relative to its neighbors.
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < m; j++) {
+                let dependencies = [];
+                if (i === 0 || j === 0) {
+                    dp[i][j] = 1;
+                } else {
+                    // Check if current cell alternates correctly with Top, Left, and Top-Left
+                    const current = grid[i][j];
+                    const top = grid[i-1][j];
+                    const left = grid[i][j-1];
+                    const diag = grid[i-1][j-1];
+
+                    dependencies = [[i-1, j], [i, j-1], [i-1, j-1]];
+                    
+                    if (current !== top && current !== left && current === diag) {
+                        dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1;
+                    } else {
+                        dp[i][j] = 1;
+                    }
+                }
+                
+                maxSide = Math.max(maxSide, dp[i][j]);
+                
+                steps.push({
+                    i, j,
+                    val: grid[i][j],
+                    dpVal: dp[i][j],
+                    maxSoFar: maxSide,
+                    dependencies,
+                    explanation: dp[i][j] > 1 
+                        ? `Aha! Cell (${i},${j}) fits the pattern! It extends a square to size ${dp[i][j]}.`
+                        : `Cell (${i},${j}) starts a new pattern. Size is 1.`,
+                    currentDPState: JSON.parse(JSON.stringify(dp))
+                });
+            }
+        }
+        return steps;
+    }
+</script>
+
+<div class="max-w-7xl mx-auto space-y-6">
+    <header class="flex justify-between items-center bg-indigo-600 p-6 rounded-2xl shadow-2xl">
+        <div>
+            <h1 class="text-3xl font-black tracking-tight">🏁 THE CHESSBOARD CRACKER</h1>
+            <p class="text-indigo-200 opacity-80">Finding the largest alternating submatrix</p>
+        </div>
+        <div id="step-counter" class="text-2xl font-mono bg-black/30 px-4 py-2 rounded-lg">STEP: 00</div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass-card p-4 rounded-2xl">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-400">
+                <i data-lucide="layers"></i> 3D Pattern Height (DP Value)
+            </h2>
+            <div id="three-container" class="canvas-container"></div>
+        </div>
+
+        <div class="glass-card p-4 rounded-2xl">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-emerald-400">
+                <i data-lucide="grid"></i> Input vs. DP Memory
+            </h2>
+            <div id="grid-2d" class="flex flex-wrap gap-1 justify-center content-center h-[400px] overflow-auto bg-slate-900/50 rounded-xl p-4">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="md:col-span-3 glass-card p-8 rounded-2xl border-b-4 border-indigo-500">
+            <p id="logic-text" class="text-xl font-medium text-indigo-100 mb-6 min-h-[3rem]">Ready to scan the grid, Captain?</p>
+            <div class="flex items-center gap-6">
+                <button onclick="prevStep()" class="p-4 rounded-xl bg-slate-700 hover:bg-slate-600 transition-all"><i data-lucide="chevron-left"></i></button>
+                <input type="range" id="progress-slider" class="flex-grow h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500" min="0" value="0">
+                <button onclick="nextStep()" class="p-4 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition-all shadow-lg shadow-indigo-500/20"><i data-lucide="chevron-right"></i></button>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-amber-500">
+            <h3 class="text-amber-500 uppercase text-xs font-black tracking-widest mb-4">Scanner Stats</h3>
+            <div id="stats-panel" class="space-y-3 font-mono">
+                <div class="flex justify-between"><span>Pos:</span> <span id="stat-pos">-</span></div>
+                <div class="flex justify-between"><span>Value:</span> <span id="stat-val">-</span></div>
+                <div class="flex justify-between text-indigo-400 font-bold"><span>Max Sq:</span> <span id="stat-max">0</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentIdx = -1;
+    const steps = calculateSteps();
+    const slider = document.getElementById('progress-slider');
+    slider.max = steps.length - 1;
+
+    // --- Three.js Implementation ---
+    const container = document.getElementById('three-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+    const meshMap = [];
+
+    function init3D() {
+        const { grid, n, m } = PROBLEM_DATA;
+        for(let i=0; i<n; i++) {
+            meshMap[i] = [];
+            for(let j=0; j<m; j++) {
+                const geo = new THREE.BoxGeometry(0.9, 0.1, 0.9);
+                const mat = new THREE.MeshPhongMaterial({ color: grid[i][j] === 1 ? 0xffffff : 0x334155 });
+                const box = new THREE.Mesh(geo, mat);
+                box.position.set(j - m/2, 0, i - n/2);
+                group.add(box);
+                meshMap[i][j] = box;
+            }
+        }
+        scene.add(group);
+        const light = new THREE.PointLight(0x6366f1, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        camera.position.set(0, 5, 7);
+        camera.lookAt(0, 0, 0);
+    }
+
+    function updateVisuals() {
+        if (currentIdx < 0) return;
+        const step = steps[currentIdx];
+        
+        // Update 2D
+        const grid2d = document.getElementById('grid-2d');
+        const { n, m } = PROBLEM_DATA;
+        grid2d.style.gridTemplateColumns = `repeat(${m}, 45px)`;
+        grid2d.innerHTML = '';
+
+        for(let i=0; i<n; i++) {
+            for(let j=0; j<m; j++) {
+                const cell = document.createElement('div');
+                cell.className = `grid-cell flex flex-col items-center justify-center text-[10px] font-bold ${PROBLEM_DATA.grid[i][j] === 1 ? 'val-1' : 'val-0'}`;
+                cell.innerHTML = `<span>${PROBLEM_DATA.grid[i][j]}</span><span class="text-blue-500">${step.currentDPState[i][j]}</span>`;
+                
+                if(i === step.i && j === step.j) cell.classList.add('active-cell');
+                step.dependencies.forEach(d => {
+                    if(d[0] === i && d[1] === j) cell.classList.add('dependency-cell');
+                });
+                grid2d.appendChild(cell);
+
+                // Update 3D
+                const box = meshMap[i][j];
+                const h = step.currentDPState[i][j];
+                box.scale.y = h * 5;
+                box.position.y = (h * 5) / 20;
+                if(i === step.i && j === step.j) box.material.emissive.setHex(0xffaa00);
+                else box.material.emissive.setHex(0x000000);
+            }
+        }
+
+        // Stats
+        document.getElementById('step-counter').innerText = `STEP: ${String(currentIdx + 1).padStart(2, '0')}`;
+        document.getElementById('logic-text').innerText = step.explanation;
+        document.getElementById('stat-pos').innerText = `${step.i}, ${step.j}`;
+        document.getElementById('stat-val').innerText = step.val;
+        document.getElementById('stat-max').innerText = step.maxSoFar;
+    }
+
+    function nextStep() { if(currentIdx < steps.length-1) { currentIdx++; updateVisuals(); slider.value = currentIdx; } }
+    function prevStep() { if(currentIdx > 0) { currentIdx--; updateVisuals(); slider.value = currentIdx; } }
+    slider.oninput = (e) => { currentIdx = parseInt(e.target.value); updateVisuals(); };
+
+    function animate() {
+        requestAnimationFrame(animate);
+        group.rotation.y += 0.005;
+        renderer.render(scene, camera);
+    }
+
+    init3D();
+    animate();
+    lucide.createIcons();
+</script>
+</body>
+</html>

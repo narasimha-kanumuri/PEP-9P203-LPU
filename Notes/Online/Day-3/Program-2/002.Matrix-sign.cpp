@@ -30,6 +30,16 @@ Largest plus size:
 Twist
 Cells with value 2 behave as wildcards and can act as 1.
 Students get confused by this.
+
+Logic:
+THe system brain is silly to read the plus sign at once.
+1. Look left - COunt Non zero cells until you hit a zero.
+2. Look right - Count Non zero cells until you hit a zero.
+3. Look up - Count Non zero cells until you hit a zero.
+4. Look down - Count Non zero cells until you hit a zero.
+5. The size of the plus is the minimum of these counts.
+
+
 */
 
 #include <iostream>
