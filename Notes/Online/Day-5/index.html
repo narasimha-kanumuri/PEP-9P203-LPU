@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captain DP's Treasure Map Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #1a1a2e; color: #e1e1e1; overflow-x: hidden; }
+        .cell { transition: all 0.3s ease; border: 1px solid #30363d; }
+        .active-cell { border: 3px solid #facc15; transform: scale(1.05); z-index: 10; box-shadow: 0 0 15px #facc15; }
+        .dependency-cell { background-color: #1e3a8a; border: 2px solid #3b82f6; }
+        canvas { border-radius: 12px; cursor: move; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="p-4 md:p-8 font-sans">
+
+    <header class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-yellow-400"><i class="fas fa-skull-crossbones mr-2"></i>CAPTAIN DP'S TREASURE ENGINE</h1>
+            <p class="text-slate-400 italic">Level 8-10: Mathematical Tools & State Augmentation</p>
+        </div>
+        <div class="flex gap-2 glass p-4 rounded-2xl">
+            <button onclick="changeCase('maxPath')" class="px-3 py-1 bg-blue-600 rounded-lg text-xs font-bold hover:bg-blue-500">Gold Path</button>
+            <button onclick="changeCase('teleport')" class="px-3 py-1 bg-purple-600 rounded-lg text-xs font-bold hover:bg-purple-500">Teleport Glitch</button>
+            <button onclick="changeCase('checker')" class="px-3 py-1 bg-emerald-600 rounded-lg text-xs font-bold hover:bg-emerald-500">Parity Check</button>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-5 glass p-4 rounded-3xl relative">
+            <h2 class="text-sm font-bold uppercase mb-2 text-slate-500">3D Value Topography (Height = DP Value)</h2>
+            <div id="three-container" class="w-full h-[400px]"></div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass p-4 rounded-3xl">
+                    <h2 class="text-sm font-bold uppercase mb-4 text-blue-400">Secret Diary (DP Table)</h2>
+                    <div id="grid-container" class="grid gap-1 bg-slate-900 p-2 rounded-xl"></div>
+                </div>
+                
+                <div class="glass p-6 rounded-3xl border-l-4 border-yellow-400">
+                    <h2 class="text-sm font-bold uppercase mb-2 text-yellow-400">Captain's Log</h2>
+                    <div id="logic-text" class="text-lg font-medium leading-relaxed">Prepare for the hunt, matey!</div>
+                    <div id="trace-table" class="mt-4 text-xs font-mono text-slate-400 space-y-1"></div>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-3xl flex items-center gap-6">
+                <button onclick="prevStep()" class="p-4 bg-slate-700 hover:bg-slate-600 rounded-full transition-transform active:scale-90">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <div class="flex-grow">
+                    <input type="range" id="step-slider" min="0" max="0" value="0" oninput="jumpToStep(this.value)" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-yellow-400">
+                    <div class="flex justify-between text-[10px] mt-2 text-slate-500 font-bold uppercase tracking-widest">
+                        <span>Start of Journey</span>
+                        <span id="step-counter">Step: 0 / 0</span>
+                        <span>Treasure Found</span>
+                    </div>
+                </div>
+                <button onclick="nextStep()" class="p-4 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-full transition-transform active:scale-90">
+                    <i class="fas fa-arrow-right text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+<script>
+/** * 🛠️ INPUT INJECTION SECTION 
+ * You can modify these test cases to simulate any 2D DP problem.
+ */
+const PROBLEMS = {
+    maxPath: {
+        grid: [[2, 4, 1], [3, 1, 5], [1, 2, 1]],
+        logic: "Standard Gold Path. DP[r][c] = Cell + max(Above, Left)",
+        compute: (grid) => {
+            const R = grid.length, C = grid[0].length;
+            let steps = [];
+            let dp = Array.from({length: R}, () => Array(C).fill(0));
+            for(let r=0; r<R; r++) {
+                for(let c=0; c<C; c++) {
+                    let prevs = [];
+                    let val = grid[r][c];
+                    if(r > 0 && c > 0) { val += Math.max(dp[r-1][c], dp[r][c-1]); prevs=[[r-1,c], [r,c-1]]; }
+                    else if(r > 0) { val += dp[r-1][c]; prevs=[[r-1,c]]; }
+                    else if(c > 0) { val += dp[r][c-1]; prevs=[[r,c-1]]; }
+                    dp[r][c] = val;
+                    steps.push({ r, c, val, prevs, log: `Captain looks at [${r},${c}]. Taking the best path! Current Treasure: ${val}` });
+                }
+            }
+            return steps;
+        }
+    },
+    teleport: {
+        grid: [[5, 2, 1], [1, 8, 2], [3, 1, 5]],
+        logic: "State Augmentation: One 'Teleport' allowed to bypass small cells.",
+        compute: (grid) => {
+            // Simplified for visualization: highlighting "jump" logic
+            let steps = [];
+            steps.push({r:0, c:0, val:5, prevs:[], log: "Starting point."});
+            steps.push({r:1, c:1, val:13, prevs:[[0,0]], log: "Captain used a Secret Tunnel (Teleport) to skip [0,1] and [1,0]!"});
+            return steps;
+        }
+    },
+    checker: {
+        grid: [[1, 0, 1], [0, 1, 0], [1, 0, 1]],
+        logic: "Parity Check: Using (r+c)%2 to detect the checkerboard pattern.",
+        compute: (grid) => {
+            let steps = [];
+            for(let r=0; r<3; r++) {
+                for(let c=0; c<3; c++) {
+                    let parity = (r + c) % 2;
+                    steps.push({r, c, val: parity, prevs: [], log: `Coord (${r},${c}) sum is ${r+c}. Parity is ${parity === 0 ? 'Even' : 'Odd'}.`});
+                }
+            }
+            return steps;
+        }
+    }
+};
+
+// --- ENGINE CORE ---
+let currentStep = -1;
+let history = [];
+let scene, camera, renderer, cubes = [];
+let currentProblem = PROBLEMS.maxPath;
+
+function init() {
+    setupThreeJS();
+    changeCase('maxPath');
+    animate();
+}
+
+function setupThreeJS() {
+    const container = document.getElementById('three-container');
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 10, 7.5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
+    camera.position.set(5, 5, 5);
+    camera.lookAt(2, 0, 2);
+}
+
+function changeCase(key) {
+    currentProblem = PROBLEMS[key];
+    history = currentProblem.compute(currentProblem.grid);
+    currentStep = -1;
+    document.getElementById('step-slider').max = history.length - 1;
+    resetVisuals();
+    nextStep();
+}
+
+function resetVisuals() {
+    const gridContainer = document.getElementById('grid-container');
+    const R = currentProblem.grid.length, C = currentProblem.grid[0].length;
+    gridContainer.style.gridTemplateColumns = `repeat(${C}, 1fr)`;
+    gridContainer.innerHTML = '';
+    
+    // Clear 3D
+    cubes.forEach(c => scene.remove(c));
+    cubes = [];
+
+    for(let r=0; r<R; r++) {
+        for(let c=0; c<C; c++) {
+            // 2D
+            const div = document.createElement('div');
+            div.id = `cell-${r}-${c}`;
+            div.className = 'cell h-16 w-16 flex flex-col items-center justify-center rounded-lg text-xs bg-slate-800';
+            div.innerHTML = `<span class="text-[8px] text-slate-500">${r},${c}</span><span class="val font-bold text-lg">0</span>`;
+            gridContainer.appendChild(div);
+
+            // 3D
+            const geometry = new THREE.BoxGeometry(0.9, 0.1, 0.9);
+            const material = new THREE.MeshPhongMaterial({ color: 0x3b82f6 });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(c, 0, r);
+            cube.userData = { r, c };
+            scene.add(cube);
+            cubes.push(cube);
+        }
+    }
+}
+
+function updateUI() {
+    const step = history[currentStep];
+    const R = currentProblem.grid.length, C = currentProblem.grid[0].length;
+
+    // Reset Highlights
+    document.querySelectorAll('.cell').forEach(el => el.classList.remove('active-cell', 'dependency-cell'));
+    
+    // Highlight Active & Dependencies
+    const active = document.getElementById(`cell-${step.r}-${step.c}`);
+    active.classList.add('active-cell');
+    active.querySelector('.val').innerText = step.val;
+
+    step.prevs.forEach(([pr, pc]) => {
+        document.getElementById(`cell-${pr}-${pc}`).classList.add('dependency-cell');
+    });
+
+    // Update 3D
+    const cube = cubes.find(c => c.userData.r === step.r && c.userData.c === step.c);
+    if(cube) {
+        cube.scale.y = step.val + 1;
+        cube.position.y = (step.val + 1) / 20;
+        cube.material.color.setHex(0xfacc15);
+    }
+
+    // Logic Trace
+    document.getElementById('logic-text').innerText = step.log;
+    document.getElementById('step-counter').innerText = `Step: ${currentStep + 1} / ${history.length}`;
+    document.getElementById('step-slider').value = currentStep;
+    
+    document.getElementById('trace-table').innerHTML = `
+        <div>COORD: [${step.r}, ${step.c}]</div>
+        <div>VALUE: ${step.val}</div>
+        <div>PREVIOUS NODES: ${JSON.stringify(step.prevs)}</div>
+    `;
+}
+
+function nextStep() {
+    if (currentStep < history.length - 1) {
+        currentStep++;
+        updateUI();
+    }
+}
+
+function prevStep() {
+    if (currentStep > 0) {
+        currentStep--;
+        // For 'back', we'd normally need to re-render the whole state up to currentStep
+        // since DP is cumulative. For this engine, we reset and jump.
+        const target = currentStep;
+        resetVisuals();
+        for(let i=0; i<=target; i++) {
+            currentStep = i;
+            updateUI();
+        }
+    }
+}
+
+function jumpToStep(val) {
+    resetVisuals();
+    for(let i=0; i<=val; i++) {
+        currentStep = i;
+        updateUI();
+    }
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    scene.rotation.y += 0.005;
+    renderer.render(scene, camera);
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
