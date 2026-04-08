@@ -87,6 +87,36 @@ but return minimum number of cuts instead of boolean.
 
 ---
 
+### 10️⃣ Minimum Edit Distance with Substring Replacement
+
+Calculate edit distance between two strings,
+but you can replace any substring with another string in one operation.
+*(Twist: DP + substring replacement adds a new dimension to the state)*
+
+---
+
+### 11️⃣ Unique Paths with Energy Boost
+
+Count paths in grid moving right/down,
+but you have one energy boost that allows you to skip one cell.
+*(Twist: multi-state DP with energy boost state)*
+
+---
+
+### 12️⃣ Knapsack with Item Dependencies
+
+Each item has a dependency on another item,
+meaning you can only take it if you also take its dependency.
+*(Twist: DP + dependency graph adds a new layer of complexity)*
+
+---
+
+### 13️⃣ Longest Palindromic Subsequence with One Deletion
+
+Find longest palindromic subsequence,
+but you can delete at most one character from the original string.
+*(Twist: DP + extra state for deletion)*
+
 # ✅ Concept Coverage Check (Mandatory)
 
 | Concept            | Covered |
@@ -98,8 +128,8 @@ but return minimum number of cuts instead of boolean.
 | Pattern DP         | 6       |
 | Knapsack DP        | 5       |
 | String DP          | 9       |
-| State augmentation | 3,4,7   |
-| Advanced DP twist  | 7,8,9   |
+| State augmentation | 3,4,7,13 |
+| Advanced DP twist  | 7,8,9,13 |
 
 ✔ matches DP concept file
 ✔ matches teleprompter flow
