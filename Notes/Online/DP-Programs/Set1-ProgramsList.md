@@ -117,6 +117,22 @@ Find longest palindromic subsequence,
 but you can delete at most one character from the original string.
 *(Twist: DP + extra state for deletion)*
 
+---
+
+### 14️⃣ Maximum Subarray Sum with One Modification
+
+Find maximum subarray sum,
+but you can modify at most one element to any value.
+*(Twist: DP + extra state for modification)*
+
+---
+
+### 15️⃣ Minimum Path Sum with One Cell Skip
+
+Find minimum path sum in grid moving right/down,
+but you can skip one cell and move to the next one.
+*(Twist: multi-state DP with skip state)*
+
 # ✅ Concept Coverage Check (Mandatory)
 
 | Concept            | Covered |
