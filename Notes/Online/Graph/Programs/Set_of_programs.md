@@ -10,7 +10,7 @@ Each question just three lines, with a twist mentioned in the last line. The twi
 
 ## 1. Depth-First Search (DFS) with a Twist
 
-### Question:
+### Question
 
 Given a graph, perform a depth-first search starting from a given node. However, the twist is that you must visit the nodes in a specific order based on a custom priority function provided for each node.
 
@@ -18,3 +18,12 @@ Given a graph, perform a depth-first search starting from a given node. However,
 The priority function will determine the order of node visits, and it may change dynamically based on certain conditions during the traversal. For example, if a node has been visited more than once, its priority may decrease, affecting the order of subsequent visits.
 
 ## 2. Breadth-First Search (BFS) with a Twist
+
+### Question
+
+Given a graph, perform a breadth-first search starting from a given node. The twist is that you must also keep track of the distance from the starting node to each visited node, and if the distance exceeds a certain threshold, you must skip visiting that node.
+
+**Twist:**
+The threshold for skipping nodes can change dynamically based on the number of nodes visited so far. For example, after visiting a certain number of nodes, the threshold may decrease, making it more challenging to visit distant nodes as the traversal progresses.
+
+## 3. Dijkstra's Algorithm with a Twist
