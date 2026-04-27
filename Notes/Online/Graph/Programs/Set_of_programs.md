@@ -27,3 +27,11 @@ Given a graph, perform a breadth-first search starting from a given node. The tw
 The threshold for skipping nodes can change dynamically based on the number of nodes visited so far. For example, after visiting a certain number of nodes, the threshold may decrease, making it more challenging to visit distant nodes as the traversal progresses.
 
 ## 3. Dijkstra's Algorithm with a Twist
+
+### Question
+
+Given a weighted graph, implement Dijkstra's algorithm to find the shortest path from a starting node to all other nodes. The twist is that the weights of the edges can change dynamically during the execution of the algorithm based on certain conditions, such as the number of times an edge has been traversed.
+
+**Twist:**
+
+The weight of an edge may increase after it has been traversed a certain number of times, making it more expensive to use that edge in subsequent paths. This will require the algorithm to adapt and potentially find alternative routes as the weights change.
