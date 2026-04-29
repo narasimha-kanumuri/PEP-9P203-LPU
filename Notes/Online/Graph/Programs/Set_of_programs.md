@@ -35,3 +35,6 @@ Given a weighted graph, implement Dijkstra's algorithm to find the shortest path
 **Twist:**
 
 The weight of an edge may increase after it has been traversed a certain number of times, making it more expensive to use that edge in subsequent paths. This will require the algorithm to adapt and potentially find alternative routes as the weights change.
+
+## 4. Topological Sort with a Twist
+
