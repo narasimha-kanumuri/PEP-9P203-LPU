@@ -38,3 +38,26 @@ The weight of an edge may increase after it has been traversed a certain number 
 
 ## 4. Topological Sort with a Twist
 
+### Question
+
+Given a directed acyclic graph (DAG), perform a topological sort. The twist is that certain nodes can only be included in the topological order after a specific number of other nodes have been visited.
+
+**Twist:**
+Each node has a dependency count that must be satisfied before it can be included in the topological order. This adds an additional layer of complexity to the standard topological sort algorithm.
+
+## 5. Prim's Algorithm with a Twist
+
+### Question
+
+Given a weighted graph, implement Prim's algorithm to find the minimum spanning tree. The twist is that the weights of the edges can change dynamically based on certain conditions, such as the number of times an edge has been included in the spanning tree.
+
+**Twist:** The weight of an edge may decrease after it has been included in the spanning tree a certain number of times, making it more attractive to include that edge in subsequent iterations. This will require the algorithm to adapt and potentially find alternative edges as the weights change.
+
+## 6. Kruskal's Algorithm with a Twist
+
+### Question
+
+Given a weighted graph, implement Kruskal's algorithm to find the minimum spanning tree. The twist is that the weights of the edges can change dynamically based on certain conditions, such as the number of times an edge has been included in the spanning tree.
+
+**Twist:** The weight of an edge may increase after it has been included in the spanning tree a certain number of times, making it less attractive to include that edge in subsequent iterations. This will require the algorithm to adapt and potentially find alternative edges as the weights change.
+
